@@ -10,7 +10,7 @@ Para executar pelo código no Windows, com Python 3.10+ e Tkinter:
 
 ```powershell
 cd renamer/Renomeador_de_Midia_Projeto
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-build.txt
 python media_renamer.py
 ```
 
@@ -23,14 +23,14 @@ A instalação é necessária apenas em um ambiente ainda sem dependências. A v
 | `AGENTS.md` | Regras para agentes e manutenção |
 | `docs/` | Estado atual, memória, arquitetura, revisão e continuidade |
 | `scripts/` | Rotinas locais de recuperação e seus testes |
-| `renamer/Renomeador_de_Midia_Projeto/` | Código atual, dependências e specs herdados |
+| `renamer/Renomeador_de_Midia_Projeto/` | GUI, motor de renomeação, dependências fixadas e spec |
 | `renamer final/` | Distribuição Windows atual e guia legado |
 | `renamer original/` | Versão original preservada, sem desenvolvimento ativo |
 | `backups/` | Histórico local de executáveis, preservado |
 | `.checkpoints/` | Recuperação local verificada; fora do Git |
 | `build/`, `dist/` em qualquer nível | Artefatos de empacotamento |
 
-Os caminhos do aplicativo foram mantidos para preservar comandos, distribuição e referências existentes. A modularização do código é uma etapa futura, acompanhada de testes e nova distribuição Windows.
+Os caminhos do aplicativo foram mantidos para preservar comandos, distribuição e referências existentes. O motor de validação/renomeação foi separado da GUI, com testes e distribuição Windows atualizada.
 
 ## Retomar e encerrar
 
@@ -38,6 +38,7 @@ Na raiz, com Python 3.10+ (`python3` no Linux/WSL; `python` no Windows):
 
 ```sh
 python3 scripts/continuity.py retomar
+python3 -m unittest discover -s tests -v
 python3 -m unittest discover -s scripts -p 'test_*.py' -v
 python3 scripts/continuity.py encerrar
 python3 scripts/continuity.py verificar
@@ -45,6 +46,6 @@ python3 scripts/continuity.py verificar
 
 Leia [CURRENT_STATE](docs/CURRENT_STATE.md) e [PROJECT_MEMORY](docs/PROJECT_MEMORY.md) ao retomar. O checkpoint inclui código, documentação e executáveis em `dist/` e `renamer final/`; backups históricos e gerados de build ficam fora dos checkpoints rotineiros. Nenhuma mídia externa escolhida no aplicativo entra nessa cópia.
 
-Mudanças no aplicativo exigem backup individual dos executáveis, testes e compilação no Windows antes da entrega, conforme [desenvolvimento](docs/development.md). Mudanças somente na documentação ou nas ferramentas locais de continuidade não alteram o aplicativo distribuído.
+Mudanças no aplicativo exigem backup individual dos executáveis, testes e compilação no Windows antes da entrega. A rotina `python scripts/build_windows.py`, executada com Python Windows na raiz, realiza esse fluxo e registra a proveniência, conforme [desenvolvimento](docs/development.md). Mudanças somente na documentação ou nas ferramentas locais de continuidade não alteram o aplicativo distribuído.
 
 [Índice da documentação](docs/README.md) · [Changelog](CHANGELOG.md)

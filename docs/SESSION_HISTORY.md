@@ -16,3 +16,15 @@
 - Revisados arquivos versionados; fontes e documentação incluídas, executáveis/backups/checkpoints excluídos. Nenhuma licença foi escolhida em nome do usuário.
 - Autenticação existente do gerenciador de credenciais reutilizada sem armazenar tokens no projeto.
 - Conferir branch main remota e visibilidade após o envio; sem alteração no aplicativo ou nova build.
+
+## 25/10/2026 — Correções e nova distribuição Windows
+
+- Pedido: corrigir problemas encontrados na revisão. Checkpoint anterior criado antes da mudança.
+- Extraído motor sem GUI com validação global de nomes Windows/destinos/extensões, movimentos sem substituição, mapa persistido e rollback em duas fases. Desfazer utiliza o mesmo motor e suporta ciclos.
+- Separadas as prévias Padrão/Substituição, preservada a extensão, bloqueadas entradas inválidas e corrigido progresso em falhas. StringVar nos campos numéricos evita truncar decimais pelo IntVar.
+- Monitoramento varre em thread sem Tk, descarta resultados antigos e compara assinaturas salvas. Removidas buscas quadráticas de seleção/estabilidade. Corrigida também a mistura de strings/Paths da seleção oculta.
+- Specs consolidados, requisitos fixados nas versões existentes e guias ativos/documentação alinhados.
+- 32 casos do aplicativo cobertos no Windows (31 aprovados, symlink pulado por privilégio); oito testes Tk, incluindo bloqueio real de arquivo. Três testes de continuidade aprovados. 24 testes comuns aprovados no Linux.
+- Criado script de build Windows: testes, backups individuais com hash, staging, abertura/encerramento normais e conferência de cópias. O primeiro smoke falhou porque PowerShell não retinha o handle do processo para ler ExitCode; corrigida a verificação, sem distribuir a build rejeitada.
+- Build final `20261025T233426653659Z`, SHA-256 `7b8fe26f74ca2713779c37334dbd1de6ea0573acf8e40ca31b84032ca3b28bfa`; duas cópias ativas atualizadas. Fontes/ambiente registrados em build-manifest.json. Backups de cada tentativa e históricos anteriores preservados. Preferências e mídias reais não foram usadas nos testes.
+- Limites remanescentes documentados: recuperação manual após interrupção/bloqueio persistente; grandes acervos, DPI e drop físico não validados. Código/docs preparados para sincronização normal do GitHub público e checkpoint final verificado.

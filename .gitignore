@@ -19,3 +19,5 @@ dist/
 *.pkg
 *.zip
 *:Zone.Identifier
+.MediaRenamer-*.pending
+.__renamer_*

@@ -1,0 +1,29 @@
+{
+  "built_at": "20261025T233426653659Z",
+  "python": "3.13.15",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "packages": {
+    "PyInstaller": "6.22.3",
+    "tkinterdnd2": "0.6.3",
+    "altgraph": "0.17.5",
+    "packaging": "26.3",
+    "pyinstaller-hooks-contrib": "2026.7",
+    "pefile": "2024.8.26",
+    "pywin32-ctypes": "0.2.3",
+    "setuptools": "84.0.0"
+  },
+  "inputs": {
+    "media_renamer.py": "66d6958e44cacc03aca8fd3a59bb728ba8ad6419e00bdd134b3e3bec44e721aa",
+    "media_renamer.spec": "f30960d58185c39dacae339a8110d8ba77d0f8e4a550527e2dea6a703299bb0c",
+    "MediaRenamer.spec": "8424345c4b819f4ad7ba246b1df8616586ab104175332b447583c0b793889c18",
+    "rename_engine.py": "ea04f56cfa868ef3512cdcbe5409b904b8509c4b620b645dd54903c934cc7080",
+    "requirements-build.txt": "28bb73806b0d13211bdf944178b18ccac523d3c8fd14e866a0336573dba38dcd",
+    "requirements.txt": "1b8e1a7d91ad454f7318a28bce787b1063bef40e25e0a427395526e6c3cd82a5"
+  },
+  "executable_sha256": "7b8fe26f74ca2713779c37334dbd1de6ea0573acf8e40ca31b84032ca3b28bfa",
+  "active_paths": [
+    "renamer final/MediaRenamer.exe",
+    "renamer/Renomeador_de_Midia_Projeto/dist/MediaRenamer.exe"
+  ],
+  "validation": "unittest Windows + Tk integration + executable open/close"
+}

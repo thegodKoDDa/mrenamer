@@ -1,14 +1,12 @@
 # Memória do projeto
 
-- Nome da pasta: `mrenamer`; produto: Renomeador de Mídia/MediaRenamer. Local: `/home/gabriel/dev/mrenamer`.
-- Pedido de 25/10/2026: revisão geral e organização seguindo os padrões do EletroProjeto e projetos recentes. Referências locais consultadas: EletroProjeto e Minecoord.
-- Adotados: instruções na raiz, estado/memória/histórico, separação documental, exclusões de Git e checkpoints com recuperação isolada.
-- Stack própria preservada: Python 3.10+, Tkinter/ttk, tkinterdnd2, PyInstaller; distribuição Windows. Não é aplicação web e não usa os cálculos ou bancos do EletroProjeto.
-- Fonte atual: arquivo de 1.294 linhas em `renamer/Renomeador_de_Midia_Projeto/media_renamer.py`. Fonte original: 278 linhas em `renamer original/Renomeador_de_Midia.py`.
-- Caminhos de fontes e distribuição mantidos nesta etapa para não alterar compatibilidade nem exigir recompilação por uma reorganização física. Código do aplicativo, requirements, specs e executáveis não foram alterados.
-- Regra preexistente de recompilação e backup obrigatório de executáveis preservada; aplica-se ao aplicativo. Scripts de continuidade não fazem parte do produto empacotado.
-- Não existia `.git` nem remoto na inspeção inicial. Não existe autorização específica de publicação deste projeto; permissões remotas de projetos vizinhos não se transferem.
-- Preferências reais ficam em `~/.media_renamer.json`, fora da raiz. Mídias ficam nas pastas escolhidas pelo usuário; não são dados internos do projeto.
-- O backup inicial completo é `.checkpoints/before-organization/`; inclui os 90 arquivos iniciais, com manifesto SHA-256. Backups herdados não foram removidos ou deduplicados.
-- Organização incluiu inicialização do Git local na branch main e baseline revisado; sem remoto. Executáveis, checkpoints e backups ficam ignorados.
-- Pedido posterior de 25/10/2026: publicar no GitHub em repositório público. Destino criado: `thegodKoDDa/mrenamer`, remoto origin HTTPS. Publicação restrita às fontes e documentação revisadas; executáveis, backups e checkpoints permanecem locais.
+- Produto: Renomeador de Mídia/MediaRenamer; pasta `/home/gabriel/dev/mrenamer`. Criado originalmente no Cursor/VS Code.
+- Organização solicitada em 25/10/2026 baseada no EletroProjeto/Minecoord: regras na raiz, estado/memória/histórico, documentação por responsabilidade e recuperação verificável. Stack própria preservada: Python/Tkinter, tkinterdnd2, PyInstaller, distribuição Windows.
+- Fontes ativas: `renamer/Renomeador_de_Midia_Projeto/media_renamer.py` (GUI) e `rename_engine.py` (motor independente de GUI). Original de 278 linhas preservado em `renamer original/`.
+- Caminhos antigos preservados para compatibilidade. Distribuição principal `renamer final/MediaRenamer.exe`; segunda cópia ativa no dist do aplicativo. Executáveis e backups históricos não são atualizados como cópias ativas.
+- Regra permanente herdada: mudanças no aplicativo exigem testes, backup individual de cada exe ativo ANTES da compilação, nova build Windows e atualização/verificação das cópias. Documentação/continuidade não integram o produto empacotado.
+- Python Windows existente é chamado a partir do WSL. Build automatizada em `scripts/build_windows.py`, com staging local Windows, testes, smoke do exe, backups e manifesto de proveniência. Dependências fixadas nas versões já instaladas/validadas; não atualizar por rotina.
+- Correções solicitadas após publicação: validação global, rollback, recuperação manual por mapa, extensão preservada, desfazer por duas fases, modos de prévia separados, entradas numéricas seguras e monitoramento em thread. Não prometer atomicidade contra queda de energia.
+- Preferências reais em `~/.media_renamer.json`; mídias nas pastas do usuário não entram nos checkpoints do projeto. Desfazer é somente em memória.
+- Backup inicial completo `.checkpoints/before-organization/`: 90 arquivos iniciais e SHA-256. Fontes originais, backups herdados e pontos anteriores preservados. Novos checkpoints são restaurados isoladamente antes de atualizar latest.json.
+- Inicialmente não havia Git. Usuário autorizou explicitamente publicar em repositório público em 25/10/2026: `thegodKoDDa/mrenamer`, origin HTTPS e branch main. Fontes/docs/testes/manifesto são públicos; executáveis, backups, checkpoints e credenciais permanecem locais. Não há autorização herdada de outros projetos nem publicação de release binária.

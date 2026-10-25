@@ -10,4 +10,4 @@
 - [Pendências conhecidas](KNOWN_ISSUES.md): prioridades técnicas.
 - [Histórico de sessões](SESSION_HISTORY.md): registro cumulativo.
 
-README e PROJECT_CONTEXT dentro da pasta do aplicativo são documentos legados preservados. Em caso de divergência, conferir o código e os registros atuais deste diretório.
+README e PROJECT_CONTEXT dentro da pasta do aplicativo apontam para esta documentação canônica. O acervo em renamer original permanece histórico.

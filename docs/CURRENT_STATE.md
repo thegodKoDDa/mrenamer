@@ -1,11 +1,15 @@
 # Estado atual — 25/10/2026
 
-Revisão geral e organização inicial concluídas. Raiz com README, AGENTS, CHANGELOG, documentação de estado/memória/arquitetura/revisão e rotina local de continuidade. Adotada a organização dos projetos recentes, preservando a stack desktop Python/Tkinter.
+Correções da revisão inicial entregues com nova distribuição Windows. Preservados produto, identidade visual, caminhos ativos, fontes originais e backups históricos.
 
-Código do aplicativo, dependências, specs, originais, executáveis e backups preservados. Fonte ativa continua em `renamer/Renomeador_de_Midia_Projeto/`; distribuição em `renamer final/`. Documentos internos dessas pastas são legados; consultar docs atuais.
+GUI em `renamer/Renomeador_de_Midia_Projeto/media_renamer.py`; motor sem GUI em `rename_engine.py`. Padrão e substituição têm prévias distintas; extensão preservada; validação global de nomes/conflitos; restauração após falhas; desfazer suporta ciclos. Monitoramento usa varredura em thread e descarte de resultados antigos, com buscas de seleção/estabilidade simplificadas.
 
-Verificações: três testes de continuidade aprovados; importação da fonte sem GUI; experimentos isolados confirmaram alteração de extensão pela substituição e estado parcial em falha de renomeação. Inventário inicial completo com SHA-256 em `.checkpoints/before-organization/`. Checkpoint de encerramento é indicado por `.checkpoints/latest.json` e validado por extração temporária e hashes.
+Build Windows: Python 3.13.15, PyInstaller 6.22.3, tkinterdnd2 0.6.3, versões instaladas fixadas sem reinstalação. As duas cópias ativas foram atualizadas e conferidas. Manifesto em `renamer final/build-manifest.json`; SHA-256 do executável: `7b8fe26f74ca2713779c37334dbd1de6ea0573acf8e40ca31b84032ca3b28bfa`. Cada compilação teve backups individuais prévios, todos preservados.
 
-Limites: interface e executáveis Windows não executados, sem nova build; igualdade entre binários ativos confirmada, correspondência com a fonte não demonstrada. Ver KNOWN_ISSUES para problemas herdados. Git local na branch main; destino público autorizado: https://github.com/thegodKoDDa/mrenamer (origin HTTPS). Código e documentação são publicados; executáveis, backups e checkpoints continuam locais.
+Verificações: 32 casos do aplicativo cobertos no Windows (31 aprovados e um caso de symlink pulado por privilégio), incluindo oito testes de integração Tk; três testes de continuidade aprovados. Linux também validou os 24 testes comuns, incluindo symlink. Teste com bloqueio real de arquivo no Windows confirmou rollback sem temporários restantes. Executável compilado abriu e fechou normalmente, com código zero e preferências temporárias. As fontes foram confrontadas com o manifesto após a build.
 
-Próximo passo: corrigir a segurança da renomeação/substituição/desfazer com testes isolados, seguindo o ciclo obrigatório de backups e nova build Windows. Depois avaliar modularização e ambiente reproduzível. Retomar com `python3 scripts/continuity.py retomar`.
+Limites: não há atomicidade contra queda de energia nem recuperação automática após reinício; mapa JSON preservado auxilia recuperação manual. Desfazer só existe na sessão. Grandes acervos/volumes de rede, gesto físico de drop e outros monitores/DPI não foram avaliados. Detalhes em KNOWN_ISSUES.
+
+GitHub público autorizado: https://github.com/thegodKoDDa/mrenamer, branch main. Executáveis, backups e checkpoints continuam locais; manifesto de proveniência e código/docs são versionados. Encerramento cria checkpoint com restauração temporária verificada, indicado por `.checkpoints/latest.json`.
+
+Próximos passos conforme uso real: validar gestos/DPI e desempenho em acervos grandes; avaliar recuperação assistida de mapas após interrupção. Retomar com `python3 scripts/continuity.py retomar`.

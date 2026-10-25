@@ -1,10 +1,15 @@
 import os
 import json
 import re
+import queue
+import threading
 from datetime import datetime
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from pathlib import Path
+
+from rename_engine import (RenameTransactionError, rename_batch, replace_stem,
+                           validate_name, validate_operations)
 
 try:
     from tkinterdnd2 import DND_FILES, TkinterDnD
@@ -49,8 +54,8 @@ class MediaRenamer:
         self.config = self.load_config()
         self.folder = tk.StringVar()
         self.base_name = tk.StringVar(value="Arquivo")
-        self.start_number = tk.IntVar(value=1)
-        self.digits = tk.IntVar(value=3)
+        self.start_number = tk.StringVar(value="1")
+        self.digits = tk.StringVar(value="3")
         self.separator = tk.StringVar(value="_")
         self.filter_type = tk.StringVar(value="Todos")
         self.include_subfolders = tk.BooleanVar(value=self.config.get("include_subfolders", False))
@@ -69,6 +74,7 @@ class MediaRenamer:
         self.date_format = tk.StringVar(value="AAAA-MM-DD")
         self.replace_text = tk.StringVar(value="")
         self.replace_with = tk.StringVar(value="")
+        self.preview_mode = tk.StringVar(value="Padrão")
 
         self.files = []
         self.selected = set()
@@ -78,6 +84,9 @@ class MediaRenamer:
         self._busy = False
         self._watch_job = None
         self._pending_sizes = {}
+        self._scan_generation = 0
+        self._scan_running = False
+        self._scan_results = queue.SimpleQueue()
         self.selection_summary = None
         self.example_label = None
 
@@ -262,7 +271,7 @@ class MediaRenamer:
             actions, text="0 de 0 arquivos selecionados", style="Bold.TLabel")
         self.selection_summary.grid(row=0, column=3, sticky="e", padx=(10, 0))
 
-        replace_frame = ttk.LabelFrame(main, text="Substituir texto no nome", padding=8)
+        replace_frame = ttk.LabelFrame(main, text="Substituir texto nos nomes atuais (preserva extensão)", padding=8)
         replace_frame.grid(row=4, column=0, sticky="ew", pady=(0, 10))
         replace_frame.columnconfigure(1, weight=1)
         ttk.Label(replace_frame, text="Procurar:", style="Bold.TLabel").grid(row=0, column=0, sticky="w")
@@ -272,9 +281,17 @@ class MediaRenamer:
             row=0, column=2, sticky="w")
         ttk.Entry(replace_frame, textvariable=self.replace_with, style="Field.TEntry").grid(
             row=0, column=3, sticky="ew", padx=(8, 0))
-        ttk.Button(replace_frame, text="Substituir texto",
+        ttk.Button(replace_frame, text="Aplicar substituição",
                    style="Secondary.TButton", command=self.replace_selected_names).grid(
             row=0, column=4, sticky="e", padx=(10, 0))
+
+        preview_options = ttk.Frame(replace_frame)
+        preview_options.grid(row=1, column=0, columnspan=5, sticky="w", pady=(6, 0))
+        ttk.Label(preview_options, text="Mostrar prévia:").pack(side="left")
+        for mode in ("Padrão", "Substituição"):
+            ttk.Radiobutton(preview_options, text=mode, value=mode,
+                            variable=self.preview_mode,
+                            command=self.refresh_preview).pack(side="left", padx=(8, 0))
 
         list_frame = ttk.Frame(main)
         list_frame.grid(row=5, column=0, sticky="nsew")
@@ -340,7 +357,7 @@ class MediaRenamer:
         ttk.Button(action_bar, text="× LIMPAR",
                    style="Danger.TButton", command=self.clear_workspace).pack(
             side="left", padx=(0, 10))
-        ttk.Button(action_bar, text="✓ RENOMEAR ARQUIVOS",
+        ttk.Button(action_bar, text="✓ RENOMEAR (PADRÃO)",
                    style="Primary.TButton", command=self.rename_files).pack(side="left")
 
         for var in (
@@ -453,29 +470,14 @@ class MediaRenamer:
             )
 
     def friendly_file_error(self, exc, filename="o arquivo"):
-        if isinstance(exc, FileExistsError):
-            return f"Não foi possível renomear '{filename}' porque já existe um arquivo com esse nome."
+        if isinstance(exc, (RenameTransactionError, ValueError, FileExistsError)):
+            return str(exc)
         if isinstance(exc, PermissionError) or getattr(exc, "winerror", None) == 32:
-            return f"Não foi possível renomear '{filename}' porque ele está sendo usado por outro programa."
-        return f"Não foi possível concluir a operação em '{filename}'. Verifique as permissões da pasta e tente novamente."
+            return f"Não foi possível alterar '{filename}'. Verifique se está em uso e as permissões da pasta."
+        return f"Não foi possível concluir a operação: {exc}"
 
     def rename_operations(self, operations, progress=None):
-        temporary_operations = []
-        for operation_number, (old, new) in enumerate(operations):
-            temporary_number = operation_number
-            temporary = old.with_name(
-                f".__renamer_tmp_{os.getpid()}_{temporary_number}{old.suffix}")
-            while temporary.exists():
-                temporary_number += 1
-                temporary = old.with_name(
-                    f".__renamer_tmp_{os.getpid()}_{temporary_number}{old.suffix}")
-            old.rename(temporary)
-            temporary_operations.append((temporary, new))
-
-        for temporary, new in temporary_operations:
-            temporary.rename(new)
-            if progress is not None:
-                progress[0] += 1
+        return rename_batch(operations, progress)
 
     def register_drop_target(self, widget):
         if DND_FILES is None:
@@ -684,11 +686,12 @@ class MediaRenamer:
             return "Documentos"
         return "Arquivos/Outros"
 
-    def is_renameable_file(self, path):
+    @staticmethod
+    def is_renameable_file(path):
         if not path.is_file():
             return False
         name = path.name
-        if name.startswith(".__renamer_tmp_") or name.startswith("~$"):
+        if path.is_symlink() or name.startswith(".__renamer_") or name.startswith("~$"):
             return False
         suffix = path.suffix.lower()
         if not suffix:
@@ -712,8 +715,8 @@ class MediaRenamer:
             return False
         pending_settings = (
             self.base_name.get().strip() != "Arquivo"
-            or self.start_number.get() != 1
-            or self.digits.get() != 3
+            or self.start_number.get() != "1"
+            or self.digits.get() != "3"
             or self.separator.get() != "_"
         )
         return pending_settings or bool(folder)
@@ -743,7 +746,7 @@ class MediaRenamer:
             self.folder.set(folder)
             self.load_files()
 
-    def load_files(self, auto=False, preserve_selection=False):
+    def load_files(self, auto=False, preserve_selection=False, scanned=None):
         folder = self.folder.get()
         if not folder or not os.path.isdir(folder):
             return
@@ -751,20 +754,26 @@ class MediaRenamer:
         if auto and self._busy:
             return
 
+        if not auto:
+            self._scan_generation += 1
         old_selected_paths = {str(p) for p in self.selected}
         if preserve_selection and self.search_text.get().strip():
             self.hidden_selected.update(old_selected_paths)
         elif preserve_selection and not self.search_text.get().strip():
             old_selected_paths.update(str(p) for p in self.hidden_selected)
             self.hidden_selected.clear()
-        collected = self._collect_folder_files()
+        collected = self._collect_folder_files(scanned)
+        live_keys = {self._file_key(p) for p in collected}
         if auto:
-            collected = [p for p in collected if self._file_is_stable(p, already_listed=True)]
+            listed_keys = {self._file_key(p) for p in self.files}
+            collected = [p for p in collected if self._file_is_stable(p, listed_keys)]
+        self._pending_sizes = {key: size for key, size in self._pending_sizes.items()
+                               if key in live_keys}
 
         new_signature = self._files_signature(collected)
-        old_signature = self._files_signature(self.files)
-        if auto and new_signature == old_signature:
+        if auto and new_signature == getattr(self, "_last_signature", None):
             return
+        self._last_signature = new_signature
 
         yscroll = self.tree.yview() if auto and hasattr(self, "tree") else None
 
@@ -798,19 +807,27 @@ class MediaRenamer:
     def _files_signature(self, paths):
         return {self._file_signature(path) for path in paths}
 
-    def _collect_folder_files(self):
+    @staticmethod
+    def _scan_folder(folder, recursive):
+        root = Path(folder)
+        iterator = root.rglob("*") if recursive else root.glob("*")
+        files = []
+        for path in iterator:
+            try:
+                if MediaRenamer.is_renameable_file(path):
+                    files.append(path)
+            except OSError:
+                continue
+        return files
+
+    def _collect_folder_files(self, scanned=None):
         folder = self.folder.get()
         files = []
         if not folder or not os.path.isdir(folder):
             return files
-        root = Path(folder)
-        iterator = root.rglob("*") if self.include_subfolders.get() else root.glob("*")
+        iterator = scanned if scanned is not None else self._scan_folder(
+            folder, self.include_subfolders.get())
         for p in iterator:
-            try:
-                if not self.is_renameable_file(p):
-                    continue
-            except OSError:
-                continue
             if not self.matches_filter(p):
                 continue
             search = self.search_text.get().strip().casefold()
@@ -819,9 +836,8 @@ class MediaRenamer:
             files.append(p)
         return files
 
-    def _file_is_stable(self, path, already_listed=False):
+    def _file_is_stable(self, path, listed_keys):
         key = self._file_key(path)
-        listed_keys = {self._file_key(p) for p in self.files}
         try:
             size = path.stat().st_size
         except OSError:
@@ -831,7 +847,7 @@ class MediaRenamer:
         previous = self._pending_sizes.get(key)
         self._pending_sizes[key] = size
 
-        if already_listed and key in listed_keys:
+        if key in listed_keys:
             return True
         if previous is None:
             return key in listed_keys
@@ -861,31 +877,44 @@ class MediaRenamer:
 
     def _poll_folder(self):
         self._watch_job = None
+        context = (self.folder.get().strip(), self.include_subfolders.get(),
+                   self.filter_type.get(), self.search_text.get(), self._scan_generation)
         try:
-            if not self._busy:
-                folder = self.folder.get().strip()
-                if folder and os.path.isdir(folder):
-                    self.load_files(auto=True)
-                    live_keys = {self._file_key(p) for p in self._collect_folder_files()}
-                    self._pending_sizes = {
-                        key: size for key, size in self._pending_sizes.items()
-                        if key in live_keys
-                    }
-        except Exception:
+            previous_context, scanned, error = self._scan_results.get_nowait()
+        except queue.Empty:
             pass
+        else:
+            self._scan_running = False
+            if previous_context == context and not self._busy:
+                if error:
+                    self.status.config(text=f"Não foi possível atualizar a pasta: {error}")
+                else:
+                    self.load_files(auto=True, scanned=scanned)
+        if context[0] and not self._busy and not self._scan_running:
+            self._scan_running = True
+            results = self._scan_results
+
+            def scan():
+                try:
+                    paths = self._scan_folder(context[0], context[1])
+                    results.put((context, paths, None))
+                except OSError as exc:
+                    results.put((context, [], str(exc)))
+
+            # Somente filesystem na thread; todas as chamadas Tk ficam na GUI.
+            threading.Thread(target=scan, daemon=True, name="mrenamer-scan").start()
         self._schedule_watch()
 
     def _selected_ordered_paths(self):
         return [p for p in self.files if p in self.selected]
 
     def _number_for_path(self, path, fallback_index):
-        start = int(self.start_number.get())
-        if not self.selected:
-            return start + fallback_index
-
-        selected_in_order = self._selected_ordered_paths()
-        if path in self.selected:
-            return start + selected_in_order.index(path)
+        try:
+            start = int(self.start_number.get())
+        except (tk.TclError, ValueError, TypeError) as exc:
+            raise ValueError("O número inicial deve ser um inteiro de 0 a 999999.") from exc
+        if not 0 <= start <= 999999:
+            raise ValueError("O número inicial deve estar entre 0 e 999999.")
         return start + fallback_index
 
     def _date_token_for(self, path):
@@ -917,32 +946,28 @@ class MediaRenamer:
     def _safe_name_part(self, text):
         return re.sub(r'[<>:"/\\|?*]', "-", text)
 
-    def _replace_preview_name(self, candidate_name):
-        search = self.replace_text.get().strip()
-        repl = self.replace_with.get()
-        if not search:
-            return candidate_name
-        return candidate_name.replace(search, repl)
+    def _replacement_name(self, path):
+        return replace_stem(path, self.replace_text.get().strip(), self.replace_with.get())
 
     def make_new_name(self, index, path):
         base = self.base_name.get().strip() or "Arquivo"
         sep = self.separator.get()
-        digits = max(1, int(self.digits.get()))
+        try:
+            digits = int(self.digits.get())
+        except (tk.TclError, ValueError, TypeError) as exc:
+            raise ValueError("Dígitos deve ser um inteiro de 1 a 8.") from exc
+        if not 1 <= digits <= 8:
+            raise ValueError("Dígitos deve estar entre 1 e 8.")
         number = self._number_for_path(path, index)
         counter = f"{number:0{digits}d}"
+        date_token = self._date_token_for(path)
+        stem = f"{base}{sep}{date_token}{sep}{counter}" if date_token else f"{base}{sep}{counter}"
+        return validate_name(stem + path.suffix)
 
-        if self.use_date.get():
-            date_token = self._date_token_for(path)
-            if date_token:
-                if base:
-                    base_name = f"{base}{sep}{date_token}"
-                else:
-                    base_name = date_token
-                final_name = f"{base_name}{sep}{counter}{path.suffix}"
-                return self._replace_preview_name(final_name)
-
-        final_name = f"{base}{sep}{counter}{path.suffix}"
-        return self._replace_preview_name(final_name)
+    def _preview_name(self, index, path):
+        if self.preview_mode.get() == "Substituição":
+            return self._replacement_name(path)
+        return self.make_new_name(index, path)
 
     def refresh_preview(self):
         self._updating_tree = True
@@ -950,13 +975,17 @@ class MediaRenamer:
             for item in self.tree.get_children():
                 self.tree.delete(item)
 
-            selected_order = self._selected_ordered_paths()
+            selected_indices = {p: i for i, p in enumerate(self._selected_ordered_paths())}
+            preview_error = None
             for i, path in enumerate(self.files):
                 if path not in self.selected:
                     new_name = path.name
                 else:
-                    selected_index = selected_order.index(path) if path in self.selected else i
-                    new_name = self.make_new_name(selected_index, path)
+                    try:
+                        new_name = self._preview_name(selected_indices[path], path)
+                    except (ValueError, tk.TclError, OSError) as exc:
+                        preview_error = str(exc)
+                        new_name = "Entrada inválida"
                 try:
                     size = self.format_size(path.stat().st_size)
                 except OSError:
@@ -973,12 +1002,15 @@ class MediaRenamer:
                 self.selection_summary.config(
                     text=f"{len(self.selected)} de {len(self.files)} arquivos selecionados")
             if self.example_label is not None:
-                if self.files:
-                    example_path = next(iter(self.files))
-                    self.example_label.config(
-                        text=f"Exemplo: {self.make_new_name(0, example_path)}")
-                else:
-                    self.example_label.config(text="Exemplo: Arquivo_001.ext")
+                example_path = next(iter(self.files), Path("Exemplo.ext"))
+                try:
+                    example = self._preview_name(0, example_path)
+                    self.example_label.config(text=f"Exemplo: {example}")
+                except (ValueError, tk.TclError, OSError) as exc:
+                    preview_error = str(exc)
+                    self.example_label.config(text="Corrija as opções de renomeação.")
+            if preview_error:
+                self.status.config(text=preview_error)
 
             self.tree.selection_set([str(i) for i, p in enumerate(self.files)
                                      if p in self.selected])
@@ -990,27 +1022,18 @@ class MediaRenamer:
         if self._updating_tree:
             return
         selected_iids = set(self.tree.selection())
-        self.selected = {
+        new_selected = {
             self.files[int(i)] for i in selected_iids
             if str(i).isdigit() and int(i) < len(self.files)
         }
+        if new_selected == self.selected:
+            return
+        self.selected = new_selected
         if self.search_text.get().strip():
-            visible_paths = set(self.files)
+            visible_paths = {str(p) for p in self.files}
             self.hidden_selected.difference_update(visible_paths)
-            self.hidden_selected.update(self.selected)
-        selected_order = self._selected_ordered_paths()
-        for i, path in enumerate(self.files):
-            iid = str(i)
-            if not self.tree.exists(iid):
-                continue
-            if path not in self.selected:
-                new_name = path.name
-            else:
-                selected_index = selected_order.index(path) if path in self.selected else i
-                new_name = self.make_new_name(selected_index, path)
-            self.tree.set(iid, "new", new_name)
-        if self.folder.get().strip():
-            self._update_status_summary()
+            self.hidden_selected.update(str(p) for p in self.selected)
+        self.refresh_preview()
 
     def _update_status_summary(self):
         if not self.folder.get().strip():
@@ -1140,18 +1163,16 @@ class MediaRenamer:
             messagebox.showwarning("Atenção", "Informe o texto a ser procurado antes de substituir.")
             return
 
-        operations = []
-        for path in self._selected_ordered_paths():
-            stem = path.stem
-            new_stem = stem.replace(search, self.replace_with.get())
-            new_name = f"{new_stem}{path.suffix}"
-            if new_name == path.name:
-                continue
-            target = path.with_name(new_name)
-            if target.exists() and target.resolve() != path.resolve():
-                messagebox.showerror("Erro", f"Não foi possível substituir em '{path.name}' porque o destino já existe.")
-                return
-            operations.append((path, target))
+        self.preview_mode.set("Substituição")
+        self.refresh_preview()
+        try:
+            operations = validate_operations([
+                (path, path.with_name(self._replacement_name(path)))
+                for path in self._selected_ordered_paths()
+            ])
+        except (ValueError, OSError, tk.TclError) as exc:
+            messagebox.showerror("Substituição inválida", self.friendly_file_error(exc))
+            return
 
         if not operations:
             messagebox.showinfo("Sem alterações", "Nenhum arquivo corresponde ao texto informado.")
@@ -1201,10 +1222,7 @@ class MediaRenamer:
 
         self._busy = True
         try:
-            for new_path, old_path in [(new, old) for old, new in operations]:
-                if old_path.exists():
-                    raise FileExistsError(f"O nome original já existe e não pode ser restaurado: {old_path.name}")
-                new_path.rename(old_path)
+            self.rename_operations([(new, old) for old, new in operations])
             self.undo_stack.pop()
             self.update_undo_button()
             self.selected.clear()
@@ -1228,24 +1246,19 @@ class MediaRenamer:
             messagebox.showwarning("Atenção", "Selecione pelo menos um arquivo.")
             return
 
-        operations = []
-        selected_order = self._selected_ordered_paths()
-        for i, path in enumerate(selected_order):
-            operations.append((path, path.with_name(self.make_new_name(i, path))))
-
-        targets = [new for _, new in operations]
-        if len(set(map(str.lower, map(str, targets)))) != len(targets):
-            messagebox.showerror("Erro", "O padrão gera nomes duplicados.")
+        self.preview_mode.set("Padrão")
+        self.refresh_preview()
+        try:
+            operations = validate_operations([
+                (path, path.with_name(self.make_new_name(i, path)))
+                for i, path in enumerate(self._selected_ordered_paths())
+            ])
+        except (ValueError, OSError, tk.TclError) as exc:
+            messagebox.showerror("Renomeação inválida", self.friendly_file_error(exc))
             return
-
-        source_set = {p.resolve() for p, _ in operations}
-        for old, new in operations:
-            if new.exists() and new.resolve() not in source_set:
-                messagebox.showerror(
-                    "Erro",
-                    f"O arquivo já existe e não será sobrescrito:\n\n{new.name}"
-                )
-                return
+        if not operations:
+            messagebox.showinfo("Sem alterações", "Os arquivos já possuem os nomes desejados.")
+            return
 
         preview = "\n".join(f"{old.name}  →  {new.name}" for old, new in operations[:12])
         if len(operations) > 12:
@@ -1257,12 +1270,9 @@ class MediaRenamer:
         ):
             return
 
-        completed = 0
         self._busy = True
         try:
-            progress = [0]
-            self.rename_operations(operations, progress)
-            completed = progress[0]
+            self.rename_operations(operations)
 
             self.undo_stack.append({"operations": operations})
             self.update_undo_button()
@@ -1276,8 +1286,7 @@ class MediaRenamer:
         except Exception as exc:
             messagebox.showerror(
                 "Erro durante a renomeação",
-                f"{self.friendly_file_error(exc)}\n\n"
-                f"{completed} de {len(operations)} arquivo(s) foram processados antes da falha."
+                self.friendly_file_error(exc)
             )
             self.load_files()
         finally:

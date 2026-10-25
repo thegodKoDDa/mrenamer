@@ -1,23 +1,41 @@
 # Desenvolvimento e distribuição
 
-Preservar a versão funcional e testar com arquivos fictícios. A interface e o executável têm como alvo Windows. Linux/WSL permite análise e testes sem janela; isso não valida o executável Windows.
+Python/Tkinter e distribuição Windows preservados. Testar somente com arquivos fictícios em pastas temporárias. Não modificar preferências reais em testes.
 
-## Execução
+## Execução e dependências
 
-Na pasta `renamer/Renomeador_de_Midia_Projeto`, em ambiente Windows Python 3.10+ com Tkinter, instalar requirements se necessário e executar `python media_renamer.py`. Não atualizar dependências por rotina. As versões usadas na build herdada não estão registradas por lock; estabelecer ambiente reproduzível antes de uma nova release.
+Na pasta `renamer/Renomeador_de_Midia_Projeto`, executar `python media_renamer.py` com Python Windows. Quando o ambiente ainda não possui dependências, instalar `python -m pip install -r requirements-build.txt`. As versões fixadas refletem o ambiente validado: Python 3.13.15, PyInstaller 6.22.3 e tkinterdnd2 0.6.3. Não instalar/atualizar por rotina.
 
-## Ciclo obrigatório de alteração do aplicativo
+## Verificações
 
-1. Criar checkpoint antes da mudança estrutural; editar e testar em pastas temporárias.
-2. Localizar as cópias ativas de MediaRenamer.exe (arquitetura lista as duas atuais).
-3. Copiar cada executável ativo individualmente para um novo backup com timestamp; conferir SHA-256 e preservar todos os anteriores.
-4. No Windows, a partir da pasta do aplicativo, executar `python -m PyInstaller --clean media_renamer.spec`. Usar o spec, que inclui recursos de tkinterdnd2.
-5. Só após build válida, atualizar `renamer final/MediaRenamer.exe` e as demais cópias ativas. A saída PyInstaller também conta como cópia que exige backup antes da build.
-6. Conferir hashes idênticos das cópias e registrar hash da fonte, dependências, ambiente e resultado do teste do executável. Igualdade entre executáveis sozinha não comprova correspondência com a fonte.
-7. Testar abertura, arrastar/soltar, filtros, seleção, datas, prévia, conflitos, renomeação e desfazer em arquivos fictícios no Windows. Se falhar, manter/restaurar a distribuição anterior e registrar a pendência.
+Na raiz:
 
-Históricos e backups nunca recebem a nova versão. Não declarar mudança no aplicativo entregue sem recompilar, atualizar e verificar o executável.
+```sh
+python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s scripts -p 'test_*.py' -v
+```
 
-## Ferramentas locais
+No Linux, testes Windows são pulados; no Windows usar `python`. A suíte de GUI abre widgets reais com janela recolhida e arquivos/preferências temporários; cobre padrão, substituição, desfazer, datas, busca, seleção, ordenação, tema, Configurações e drop simulado. Não substitui validação manual de gesto físico/monitores/DPI.
 
-`python3 -m unittest discover -s scripts -p 'test_*.py' -v` testa recuperação, exclusões, corrupção e caminhos inválidos. Não exige rebuild do aplicativo. Não há suíte automatizada permanente da GUI nesta etapa; a revisão contém evidências isoladas de problemas existentes.
+## Build obrigatória após mudança no aplicativo
+
+Criar checkpoint antes da mudança estrutural. Após editar, executar na raiz com Python Windows:
+
+```powershell
+python scripts/build_windows.py
+```
+
+O script:
+
+1. Confere versões instaladas e executa testes do aplicativo, integração Windows e continuidade.
+2. Cria backup individual de cada executável ativo, com timestamp e conferência SHA-256. Todos os backups anteriores permanecem.
+3. Copia entradas para pasta temporária no Windows e executa `python -m PyInstaller --noconfirm --clean media_renamer.spec`.
+4. Confere saída PE, abre e fecha normalmente a janela do novo exe, usando USERPROFILE temporário. Não fecha programas do usuário.
+5. Confere que a fonte não mudou durante a build e prepara/confronta todas as cópias antes de substituir as ativas. Em falha de cópia/substituição tenta restaurar as versões anteriores dos backups.
+6. Confere hashes iguais dos executáveis ativos e grava build-manifest.json com hashes das fontes/specs/requisitos, Python, plataforma e dependências.
+
+Se testes, build ou abertura falharem, não distribui o resultado. Falhas de disco/ACL também podem impedir uma restauração de distribuição; os backups individuais permanecem disponíveis. Históricos nunca recebem a nova versão. O manifesto não é assinatura digital nem garante reprodutibilidade binária entre máquinas.
+
+A partir do WSL, chamar o Python Windows instalado com o caminho Windows do script (converter com wslpath -w). O script cuida do staging local para evitar compilar diretamente em UNC.
+
+Documentação e continuidade não integram o exe. Mudança somente nelas não exige build; mudança em media_renamer.py ou rename_engine.py exige.

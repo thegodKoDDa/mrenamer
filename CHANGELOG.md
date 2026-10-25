@@ -12,3 +12,12 @@
 
 - Repositório público `thegodKoDDa/mrenamer` para código e documentação.
 - Executáveis, backups, configurações privadas e checkpoints mantidos locais.
+
+## 2026-10-25 — Correções e build Windows
+
+- Renomeação com validação global, proteção contra sobrescrita e restauração após falhas; mapa persistente para recuperação manual incompleta.
+- Desfazer com suporte a trocas/ciclos, extensão preservada e prévias separadas para padrão e substituição.
+- Entradas numéricas/nomes Windows validados sem quebrar a interface; progresso de erro correto.
+- Monitoramento em thread, descarte de resultados antigos e remoção de buscas repetidas.
+- Dependências fixadas, spec consolidado, manuais atualizados e suíte de regressão/integração Windows.
+- Nova build Windows testada e distribuída localmente nas duas cópias ativas, com backups individuais e manifesto de proveniência.
