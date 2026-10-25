@@ -9,3 +9,10 @@
 - Código do aplicativo e todos os binários/backups mantidos byte a byte; caminhos legados preservados. Sem atualização de dependências, build Windows ou teste de interface.
 - Experimentos em diretório temporário confirmaram risco de extensão modificada e falha parcial sem rollback. Correções registradas para próximo ciclo com distribuição Windows.
 - Git local inicializado na main com baseline revisado de fontes/docs e exclusões de arquivos locais; sem acesso/publicação remota. Checkpoint final validado por restauração isolada; ponto indicado por latest.json.
+
+## 25/10/2026 — Publicação no GitHub
+
+- Usuário solicitou repositório público. Criado `thegodKoDDa/mrenamer` e configurado origin HTTPS.
+- Revisados arquivos versionados; fontes e documentação incluídas, executáveis/backups/checkpoints excluídos. Nenhuma licença foi escolhida em nome do usuário.
+- Autenticação existente do gerenciador de credenciais reutilizada sem armazenar tokens no projeto.
+- Conferir branch main remota e visibilidade após o envio; sem alteração no aplicativo ou nova build.

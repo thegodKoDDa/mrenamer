@@ -2,6 +2,8 @@
 
 Aplicativo desktop para Windows, feito em Python/Tkinter, para renomear arquivos em lote com prévia, filtros, contador, datas, substituição de texto e desfazer. Projeto preservado da versão desenvolvida no Cursor/VS Code.
 
+Código público: [thegodKoDDa/mrenamer](https://github.com/thegodKoDDa/mrenamer). Executáveis e backups continuam locais; esta publicação não inclui uma release binária.
+
 Abra `renamer final/MediaRenamer.exe` no Windows. O [manual](docs/user-guide.md) descreve os recursos; veja as [limitações conhecidas](docs/KNOWN_ISSUES.md) antes de trabalhar com arquivos importantes.
 
 Para executar pelo código no Windows, com Python 3.10+ e Tkinter:

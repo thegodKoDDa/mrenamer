@@ -11,3 +11,4 @@
 - Preferências reais ficam em `~/.media_renamer.json`, fora da raiz. Mídias ficam nas pastas escolhidas pelo usuário; não são dados internos do projeto.
 - O backup inicial completo é `.checkpoints/before-organization/`; inclui os 90 arquivos iniciais, com manifesto SHA-256. Backups herdados não foram removidos ou deduplicados.
 - Organização incluiu inicialização do Git local na branch main e baseline revisado; sem remoto. Executáveis, checkpoints e backups ficam ignorados.
+- Pedido posterior de 25/10/2026: publicar no GitHub em repositório público. Destino criado: `thegodKoDDa/mrenamer`, remoto origin HTTPS. Publicação restrita às fontes e documentação revisadas; executáveis, backups e checkpoints permanecem locais.
