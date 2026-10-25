@@ -1,0 +1,21 @@
+# Dados e recuperação locais
+.checkpoints/
+backups/
+.env
+.env.*
+!.env.example
+.media_renamer.json
+
+# Dependências e gerados, em qualquer nível
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+*.exe
+*.pkg
+*.zip
+*:Zone.Identifier

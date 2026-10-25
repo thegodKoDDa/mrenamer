@@ -1,0 +1,38 @@
+RENOMEADOR DE MÍDIA
+
+Como usar:
+1. Tenha o Python 3 instalado no Windows.
+2. Dê duplo clique em Renomeador_de_Midia.py (ou execute com Python).
+3. Selecione a pasta com suas fotos/vídeos.
+4. Escolha quais arquivos deseja renomear.
+5. Defina:
+   - Nome base
+   - Número inicial
+   - Quantidade de dígitos
+   - Separador
+6. Confira a prévia.
+7. Clique em RENOMEAR ARQUIVOS.
+
+Exemplo:
+Nome base: Gameplay
+Número inicial: 1
+Dígitos: 3
+Separador: _
+
+Resultado:
+Gameplay_001.mp4
+Gameplay_002.mp4
+Gameplay_003.jpg
+
+O programa mantém automaticamente a extensão original.
+Ele também evita sobrescrever arquivos existentes e usa nomes temporários
+para reduzir problemas quando há nomes que entram em conflito.
+
+Para transformar em EXE no Windows:
+1. Abra o Prompt de Comando na pasta do arquivo.
+2. Instale o PyInstaller:
+   pip install pyinstaller
+3. Rode:
+   pyinstaller --onefile --windowed Renomeador_de_Midia.py
+
+O EXE aparecerá na pasta dist.
