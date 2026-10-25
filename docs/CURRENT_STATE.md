@@ -13,3 +13,5 @@ Limites: não há atomicidade contra queda de energia nem recuperação automát
 GitHub público autorizado: https://github.com/thegodKoDDa/mrenamer, branch main. Executáveis, backups e checkpoints continuam locais; manifesto de proveniência e código/docs são versionados. Encerramento cria checkpoint com restauração temporária verificada, indicado por `.checkpoints/latest.json`.
 
 Próximos passos conforme uso real: validar gestos/DPI e desempenho em acervos grandes; avaliar recuperação assistida de mapas após interrupção. Retomar com `python3 scripts/continuity.py retomar`.
+
+Sessão encerrada a pedido do usuário em 25/10/2026. Nenhuma mudança adicional no aplicativo após a build acima. Manter o fluxo de commit/envio revisado ao concluir alterações; GitHub não recebe executáveis ou dados locais.

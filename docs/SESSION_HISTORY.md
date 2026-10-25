@@ -28,3 +28,10 @@
 - Criado script de build Windows: testes, backups individuais com hash, staging, abertura/encerramento normais e conferência de cópias. O primeiro smoke falhou porque PowerShell não retinha o handle do processo para ler ExitCode; corrigida a verificação, sem distribuir a build rejeitada.
 - Build final `20261025T233426653659Z`, SHA-256 `7b8fe26f74ca2713779c37334dbd1de6ea0573acf8e40ca31b84032ca3b28bfa`; duas cópias ativas atualizadas. Fontes/ambiente registrados em build-manifest.json. Backups de cada tentativa e históricos anteriores preservados. Preferências e mídias reais não foram usadas nos testes.
 - Limites remanescentes documentados: recuperação manual após interrupção/bloqueio persistente; grandes acervos, DPI e drop físico não validados. Código/docs preparados para sincronização normal do GitHub público e checkpoint final verificado.
+
+## 25/10/2026 — Encerramento solicitado pelo usuário
+
+- Estado de entrega mantido: correções e build Windows concluídas; sem mudanças posteriores no aplicativo. Testes aprovados não repetidos sem mudança de código.
+- Registrada a preferência de enviar alterações revisadas/testadas ao GitHub ao concluir o trabalho, conferindo sincronização.
+- Conferidos hashes da distribuição e entradas do manifesto; documentação de continuidade atualizada. Encerramento inclui commit/envio desses registros e checkpoint com recuperação isolada verificada.
+- Próxima sessão: ler CURRENT_STATE/PROJECT_MEMORY e executar retomar; seguir a próxima demanda, mantendo os limites registrados em KNOWN_ISSUES.
