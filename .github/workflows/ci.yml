@@ -31,15 +31,16 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 10
     env:
-      # O TEMP padrão da imagem pode usar um alias DOS 8.3 (RUNNER~1).
-      # As fixtures de recuperação exigem caminhos completos, sem aliases.
-      TEMP: ${{ runner.temp }}
-      TMP: ${{ runner.temp }}
       PYTHONUTF8: '1'
     steps:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Preparar caminhos temporários completos
+        # O TEMP padrão pode usar um alias DOS 8.3 (RUNNER~1).
+        run: |
+          "TEMP=$env:RUNNER_TEMP" >> $env:GITHUB_ENV
+          "TMP=$env:RUNNER_TEMP" >> $env:GITHUB_ENV
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
