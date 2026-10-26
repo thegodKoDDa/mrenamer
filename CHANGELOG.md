@@ -4,7 +4,7 @@
 
 ### Adicionado
 
-- Download público de EXE Windows x64 e ZIP portátil em Releases, com links para a última versão estável.
+- Download público de EXE Windows x64 e ZIP portátil em Releases, com links para a última versão estável; downloads da release `build-2-1-516d5be0` conferidos sem autenticação.
 - Publicação automática após mudanças do aplicativo em main, condicionada a testes, build, smoke e hashes dos assets remotos.
 
 - Recuperação assistida em Configurações, com inspeção do mapa, prévia e confirmação antes de restaurar os nomes.

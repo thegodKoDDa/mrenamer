@@ -1,6 +1,6 @@
 # Estado atual — 26/10/2026
 
-Distribuição pública ativa: primeira release `build-1-1-7b4bc188`, com EXE Windows x64, ZIP portátil, manifesto e SHA-256. Links Latest do README testados sem autenticação; downloads e conteúdo conferidos. A release foi gerada e testada no GitHub Actions, separadamente da build local abaixo.
+Distribuição pública ativa: última release estável `build-2-1-516d5be0`, com EXE Windows x64, ZIP portátil, manifesto e SHA-256. Links Latest do README testados sem autenticação; downloads e conteúdo conferidos. A release foi gerada e testada no GitHub Actions, separadamente da build local abaixo.
 
 Apresentação pública reorganizada: README voltado ao produto e à instalação, navegação por uso/desenvolvimento/manutenção, changelog consolidado, guia de contribuição e modelos de issues/PR. Descrição e tópicos do GitHub atualizados. Apresentação visual ampliada com captura real da interface em `docs/assets/preview.png`, dados fictícios e selo do workflow Verificações. `.github/workflows/ci.yml` executa testes do aplicativo e da continuidade no Linux e no Windows. A distribuição pública agora prioriza o EXE em Releases, com ZIP portátil e alternativas por código/build. A automação produz seu próprio manifesto público; a distribuição local mantém a build abaixo.
 
@@ -19,3 +19,5 @@ Build local Windows `20261026T035150145944Z`: Python 3.13.15 e dependências fix
 Ainda dependem do ambiente físico: gesto real do Explorer e mudança entre monitores/DPI. Escala programática não substitui essas verificações. Grandes volumes/rede e responsividade durante carregamento/renomeação continuam limitados; o benchmark agora fornece referência local. Se a recuperação for interrompida e gerar outro mapa, resolver esse novo mapa antes do inicial.
 
 GitHub público autorizado: https://github.com/thegodKoDDa/mrenamer, branch main. Fontes/docs/testes/manifesto ficam no Git. Usuário autorizou executável e ZIP portátil como assets de Releases, com link Latest no README. Workflow release.yml publica após testes Linux/Windows, build, smoke e conferência dos assets remotos. Dados pessoais, backups e checkpoints permanecem locais. Encerramento cria checkpoint com restauração temporária verificada, apontado por `.checkpoints/latest.json`. Retomar com `python3 scripts/continuity.py retomar`.
+
+Sessão encerrada a pedido do usuário em 26/10/2026. Última release pública e downloads conferidos; workflows de testes e publicação aprovados. SHA-256 do EXE público: `93afeaef7388280b84947f9895ff4ff9a0299ca238f2b2b0c38dda6f4de89bcf`. Fontes e duas cópias locais permanecem coerentes com o manifesto local. Nenhuma mudança adicional no aplicativo neste encerramento.

@@ -78,3 +78,11 @@
 - Quatro testes novos de empacotamento aprovados junto aos três de continuidade; cobrem conteúdo público do pacote, divergência de fontes/binários, corrupção no download e proteção contra sobrescrever a saída. Empacotamento local real também conferido contra o manifesto, sem publicar o pacote de teste.
 - Documentação, regras permanentes, memória e estado atual atualizados para refletir a autorização e as formas de distribuição. Envio acompanhado da primeira release e conferência dos downloads públicos antes do encerramento.
 - Primeira release `build-1-1-7b4bc188` publicada pela automação; testes e build/smoke Windows aprovados. Downloads EXE/ZIP/manifesto/hashes testados anonimamente via HTTPS e conferidos: SHA-256 público `673df538b9ec53176ff64894d1adf5f19cbea5a30da5d77bb8d9dbfa2b339d76`. Sidebar do GitHub aponta para a última release. Acrescentada conferência da main antes de promover rascunho para impedir que a reexecução de um job antigo publique fontes já substituídas.
+
+## 26/10/2026 — Encerramento solicitado pelo usuário
+
+- Conferida sincronização da main com GitHub e disponibilidade da release estável `build-2-1-516d5be0`; release anterior preservada.
+- Downloads públicos da última release já validados sem autenticação, com hashes e conteúdo do ZIP conferidos. EXE público: `93afeaef7388280b84947f9895ff4ff9a0299ca238f2b2b0c38dda6f4de89bcf`. Workflows de testes e publicação aprovados para o commit da distribuição.
+- Estado atualizado para a última release. Fontes e duas cópias locais conferidas contra o manifesto local; nenhuma alteração no aplicativo ou nova compilação nesta finalização documental.
+- Mantidas as quatro formas de uso: EXE recomendado, ZIP portátil, execução pelo código e build própria. Pendências físicas e limites operacionais continuam documentados.
+- Encerramento inclui revisão documental, commit/envio dos registros e checkpoint com restauração temporária verificada. Retomar pela rotina habitual, sem refazer trabalho já validado.
