@@ -1,5 +1,7 @@
 # Estado atual — 26/10/2026
 
+Distribuição pública ativa: primeira release `build-1-1-7b4bc188`, com EXE Windows x64, ZIP portátil, manifesto e SHA-256. Links Latest do README testados sem autenticação; downloads e conteúdo conferidos. A release foi gerada e testada no GitHub Actions, separadamente da build local abaixo.
+
 Apresentação pública reorganizada: README voltado ao produto e à instalação, navegação por uso/desenvolvimento/manutenção, changelog consolidado, guia de contribuição e modelos de issues/PR. Descrição e tópicos do GitHub atualizados. Apresentação visual ampliada com captura real da interface em `docs/assets/preview.png`, dados fictícios e selo do workflow Verificações. `.github/workflows/ci.yml` executa testes do aplicativo e da continuidade no Linux e no Windows. A distribuição pública agora prioriza o EXE em Releases, com ZIP portátil e alternativas por código/build. A automação produz seu próprio manifesto público; a distribuição local mantém a build abaixo.
 
 Recuperação assistida implementada em **Configurações → Recuperar lote interrompido…**, com inspeção, prévia, confirmação e revalidação. Preservados produto, identidade visual, fontes originais, stack e históricos.
