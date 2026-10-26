@@ -35,3 +35,15 @@
 - Registrada a preferência de enviar alterações revisadas/testadas ao GitHub ao concluir o trabalho, conferindo sincronização.
 - Conferidos hashes da distribuição e entradas do manifesto; documentação de continuidade atualizada. Encerramento inclui commit/envio desses registros e checkpoint com recuperação isolada verificada.
 - Próxima sessão: ler CURRENT_STATE/PROJECT_MEMORY e executar retomar; seguir a próxima demanda, mantendo os limites registrados em KNOWN_ISSUES.
+
+## 26/10/2026 — Pendências de uso e recuperação assistida
+
+- Pedido: resolver pendências informadas na retomada. Estado/memória lidos e rotina retomar executada; Git inicialmente limpo. Checkpoint prévio `20261026T034754022756Z` criado e restaurado/verificado antes das mudanças.
+- Adicionadas inspeção/revalidação de mapas e recuperação assistida em Configurações, com prévia e confirmação. Mapas novos versão 2 registram identidade, tamanho e mtime_ns; usam a pasta ancestral comum para lotes em subpastas. Mapas antigos e históricos preservados, sem conversão silenciosa.
+- Removida escala fixa 1.1; altura da tabela usa métrica da fonte e tamanho inicial respeita escala Tk/limites da tela. Novos testes de listas Tcl com múltiplos arquivos Unicode/espaços/chaves, rejeições, recuperação pela GUI e escala Tk 100%/150%/200%.
+- Regressões encerram processo isolado após cada movimento de um ciclo e verificam recuperação dos bytes fictícios. Cobrem conflitos, arquivo alterado/ausente, mapa antigo/inválido/duplicado, caminhos externos/links, grafia Windows, subpastas e falha durante recuperação.
+- 44 casos Windows: 42 aprovados, dois symlinks pulados por privilégio. Linux: 32 aprovados, 12 pulados por dependência de Windows. Três testes de continuidade aprovados. Uma primeira execução revelou erro no mock de remoção do mapa no teste de grafia; teste corrigido e suíte final aprovada.
+- Benchmark sintético Windows com 1.000/10.000 arquivos: carregar lista + prévia 0,601/5,661 s; prévia 0,159/1,580 s; renomear 1,248/12,323 s; desfazer 1,256/12,799 s. Script reproduzível e limites registrados em development.md. Sem uso de mídia/configuração real.
+- Build `20261026T035150145944Z` entregue: `7949d7a1ed74431adcb9c270a047534f0b128e798b6340a3130c824547cdcffe`. Backups individuais em `backups/MediaRenamer_20261026T035150145944Z/`, duas cópias ativas conferidas e executável abriu/fechou com códigos zero. Nenhum histórico sobrescrito.
+- Pendências físicas permanecem explícitas: gesto do Explorer, monitores/DPI reais e rede não foram validados. Operações grandes ainda podem pausar a GUI; não houve promessa de recuperação automática ou resistência a queda de energia.
+- Documentação, arquivos novos e manifesto revisados; finalização inclui sincronização de fontes/documentação com GitHub e checkpoint restaurado/verificado.

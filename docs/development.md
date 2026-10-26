@@ -39,3 +39,20 @@ Se testes, build ou abertura falharem, não distribui o resultado. Falhas de dis
 A partir do WSL, chamar o Python Windows instalado com o caminho Windows do script (converter com wslpath -w). O script cuida do staging local para evitar compilar diretamente em UNC.
 
 Documentação e continuidade não integram o exe. Mudança somente nelas não exige build; mudança em media_renamer.py ou rename_engine.py exige.
+
+## Benchmark e validações de uso — 26/10/2026
+
+Reproduzir no Windows: `python scripts/benchmark.py --gui`. Aceita `--counts 1000 10000`; sem `--gui` mede somente varredura/motor. Usa diretório temporário Windows, arquivos fictícios de 10 bytes e preferências isoladas, restaura nomes e confere todos os conteúdos ao terminar. Não aponta para mídia do usuário.
+
+Medição única local com Python 3.13.15, cache aquecido, GUI recolhida, sem descarregar cache ou simular rede. Não representa leitura/decodificação de mídia nem desempenho garantido; testes de GUI também estavam em execução durante parte da coleta.
+
+| Arquivos | Varredura | Carregar + prévia | Atualizar prévia | Validar lote | Renomear | Desfazer |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1.000 | 0,090 s | 0,601 s | 0,159 s | 0,132 s | 1,248 s | 1,256 s |
+| 10.000 | 0,846 s | 5,661 s | 1,580 s | 1,268 s | 12,323 s | 12,799 s |
+
+Os tempos indicam crescimento próximo ao proporcional nesse intervalo; carregamento manual/renderização/renomeação ainda são síncronos. A medição não comprova responsividade em acervos arbitrariamente grandes.
+
+A suíte Windows acrescenta recuperação pela interface (cancelar/confirmar), listas Tcl de drop com Unicode/espaços/chaves e rejeições, além de inicialização/linhas nos fatores Tk correspondentes a 100%, 150% e 200%. Testes comuns usam processo isolado com `os._exit` após cada movimento para simular interrupção, conflitos, mudança de arquivos, mapas inválidos, links, subpastas e falha na recuperação. Nenhum teste interrompe o Windows ou usa mídia real.
+
+Para fechar a validação física: arrastar uma pasta temporária e arquivos fictícios do Explorer para a janela e a tabela; conferir seleção; repetir nos monitores disponíveis e nas escalas reais, incluindo troca de monitor e abertura de Configurações. Conferir texto, botões e linhas sem cortes. Esse roteiro depende do desktop e dos monitores reais e continua pendente.

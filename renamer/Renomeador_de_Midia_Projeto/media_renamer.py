@@ -5,11 +5,11 @@ import queue
 import threading
 from datetime import datetime
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox, ttk, font as tkfont
 from pathlib import Path
 
 from rename_engine import (RenameTransactionError, rename_batch, replace_stem,
-                           validate_name, validate_operations)
+                           validate_name, validate_operations, recovery_plan, recover_journal)
 
 try:
     from tkinterdnd2 import DND_FILES, TkinterDnD
@@ -45,8 +45,11 @@ class MediaRenamer:
     def __init__(self, root):
         self.root = root
         self.root.title("Renomeador de Mídia")
-        self.root.geometry("980x680")
-        self.root.minsize(840, 640)
+        scale = float(self.root.tk.call("tk", "scaling")) / (96 / 72)
+        width = min(round(980 * scale), max(1, self.root.winfo_screenwidth() - 40))
+        height = min(round(680 * scale), max(1, self.root.winfo_screenheight() - 80))
+        self.root.geometry(f"{width}x{height}")
+        self.root.minsize(min(round(840 * scale), width), min(round(640 * scale), height))
         self.root.resizable(True, True)
         self.root.option_add("*Font", ("Segoe UI", 10))
         self.root.option_add("*TCombobox*Listbox*Font", ("Segoe UI", 10))
@@ -416,7 +419,10 @@ class MediaRenamer:
                         variable=settings_subfolders).grid(
             row=3, column=0, columnspan=2, sticky="w", pady=5)
         buttons = ttk.Frame(frame)
-        buttons.grid(row=4, column=0, columnspan=2, sticky="e", pady=(14, 0))
+        ttk.Button(frame, text="Recuperar lote interrompido…",
+                   command=self.recover_interrupted_batch).grid(
+            row=4, column=0, columnspan=2, sticky="w", pady=5)
+        buttons.grid(row=5, column=0, columnspan=2, sticky="e", pady=(14, 0))
         ttk.Button(buttons, text="Cancelar", command=dialog.destroy).pack(side="left", padx=(0, 8))
 
         def apply_settings():
@@ -436,6 +442,38 @@ class MediaRenamer:
 
         ttk.Button(buttons, text="Salvar", style="Primary.TButton",
                    command=apply_settings).pack(side="left")
+
+    def recover_interrupted_batch(self):
+        if self._busy:
+            return
+        filename = filedialog.askopenfilename(
+            parent=self.root, title="Selecionar mapa do lote interrompido",
+            initialdir=self.folder.get() or None,
+            filetypes=[("Mapa de recuperação", ".__renamer_recovery_*.json"),
+                       ("JSON", "*.json")])
+        if not filename:
+            return
+        self._busy = True
+        try:
+            plan = recovery_plan(filename)
+            preview = "\n".join(f"{old.name} → {new.name}" for old, new in plan[:12])
+            if len(plan) > 12:
+                preview += f"\n... e mais {len(plan) - 12} arquivo(s)."
+            if not messagebox.askyesno(
+                    "Restaurar nomes anteriores",
+                    f"{len(plan)} arquivo(s) para restaurar.\n\n{preview}\n\n"
+                    "Confirme que este é o mapa do lote desejado e que nenhum outro "
+                    "programa está alterando os arquivos. Continuar?", parent=self.root):
+                return
+            recover_journal(filename, plan)
+            self.undo_stack.clear()
+            self.load_files()
+            messagebox.showinfo("Recuperação concluída",
+                                "Nomes anteriores restaurados; mapa removido.", parent=self.root)
+        except (OSError, ValueError, RenameTransactionError) as exc:
+            messagebox.showerror("Recuperação interrompida", str(exc), parent=self.root)
+        finally:
+            self._busy = False
 
     def format_size(self, size):
         value = float(size)
@@ -652,7 +690,7 @@ class MediaRenamer:
             background=tree_bg,
             foreground=tree_fg,
             fieldbackground=tree_bg,
-            rowheight=28,
+            rowheight=max(28, tkfont.Font(self.root, font=("Segoe UI", 10)).metrics("linespace") + 10),
             font=("Segoe UI", 10),
             borderwidth=1,
             relief="solid",
@@ -1295,9 +1333,5 @@ class MediaRenamer:
 
 if __name__ == "__main__":
     root = TkinterDnD.Tk() if TkinterDnD is not None else tk.Tk()
-    try:
-        root.tk.call("tk", "scaling", 1.1)
-    except Exception:
-        pass
     app = MediaRenamer(root)
     root.mainloop()

@@ -18,9 +18,9 @@ Monitoramento captura contexto na GUI e faz a varredura em thread daemon; result
 
 Antes de mover: validar origens, extensão, mesma pasta, nomes Windows e colisões globais sem distinção de caixa. Nenhuma mídia é testada/modificada fora dos caminhos selecionados pelo usuário.
 
-O motor escreve e sincroniza um mapa JSON na pasta da primeira origem, com caminhos absolutos e identidade de cada arquivo. Move todas as origens para nomes temporários únicos e depois aos destinos. Windows usa rename sem substituição; POSIX usa link exclusivo seguido de unlink, pois rename POSIX poderia sobrescrever outro arquivo.
+O motor escreve e sincroniza um mapa JSON versão 2 na pasta ancestral comum às origens, com caminhos absolutos, identidade, tamanho e mtime_ns de cada arquivo. Move todas as origens para nomes temporários únicos e depois aos destinos. Windows usa rename sem substituição; POSIX usa link exclusivo seguido de unlink, pois rename POSIX poderia sobrescrever outro arquivo.
 
-Em falha, libera primeiro os destinos já concluídos e depois restaura as origens, permitindo ciclos. Informa progresso real e resultado da restauração. Se incompleta, preserva mapa e caminhos atuais para recuperação manual. Não é atomicidade contra queda de energia; ver KNOWN_ISSUES.
+Em falha, libera primeiro os destinos já concluídos e depois restaura as origens, permitindo ciclos. Informa progresso real e resultado da restauração. Se incompleta, preserva mapa e caminhos atuais para recuperação assistida ou manual. `recovery_plan` inspeciona os três caminhos registrados por identidade e metadados, limita os caminhos à pasta do mapa e valida globalmente o retorno às origens. `recover_journal` revalida a prévia confirmada, usa o mesmo motor para restaurar e só depois remove o mapa inicial. Uma interrupção durante a recuperação pode deixar outro mapa, que precisa ser resolvido primeiro. Mapas versão 1 não são convertidos automaticamente. Não é atomicidade contra queda de energia; ver KNOWN_ISSUES.
 
 ## Dados e distribuição
 
@@ -29,3 +29,5 @@ Preferências reais: `~/.media_renamer.json`. Desfazer: pilha em memória. Mídi
 Spec canônico: `media_renamer.spec`; `MediaRenamer.spec` delega ao mesmo arquivo por compatibilidade. PyInstaller coleta tkinterdnd2, gera onefile sem console e inclui o motor importado. Dependências fixadas em requirements.txt e requirements-build.txt.
 
 Cópias ativas: `renamer final/MediaRenamer.exe` e `renamer/Renomeador_de_Midia_Projeto/dist/MediaRenamer.exe`. `scripts/build_windows.py` testa, preserva cada cópia anterior, compila em pasta temporária Windows, abre/fecha a build e só então atualiza as cópias ativas. `renamer final/build-manifest.json` registra ambiente, hashes das entradas e do executável. Históricos em backups e renamer original não são atualizados.
+
+A inicialização conserva a escala informada pelo Tk, dimensiona a janela dentro da tela e calcula a altura das linhas pela métrica da fonte. Testes de escala programática não equivalem a mudança real de DPI ou de monitor durante a execução.

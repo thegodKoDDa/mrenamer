@@ -138,6 +138,53 @@ class WindowsGuiTests(unittest.TestCase):
             self.app._poll_folder()
             load.assert_not_called()
 
+    def test_tcl_drop_multiple_unicode_spaces_and_mixed_items(self):
+        paths = [self.folder / 'ação {família}.jpg', self.folder / 'vídeo férias.mp4']
+        for p in paths:
+            p.write_bytes(b'FAKE')
+        # Serialização real de uma lista Tcl, como o backend TkDnD entrega.
+        data = self.root.tk.call('format', '%s', self.root.tk.call('list', *(str(p) for p in paths)))
+        self.app.on_drop(type('Drop', (), {'data': data})())
+        self.pump()
+        self.assertEqual(self.app.selected, set(paths))
+        before = self.app.folder.get()
+        self.app.handle_dropped_paths([str(self.folder), str(paths[0])])
+        self.mocks[-2].assert_called_once()
+        self.assertEqual(self.app.folder.get(), before)
+        other = Path(self.temp.name) / 'other'
+        other.mkdir()
+        p = other / 'photo.jpg'
+        p.write_bytes(b'FAKE')
+        self.app.handle_dropped_paths([str(paths[0]), str(p)])
+        self.assertEqual(self.app.folder.get(), before)
+        self.assertEqual(self.mocks[-2].call_count, 2)
+
+    def test_assisted_recovery_preview_cancel_then_confirm(self):
+        import rename_engine as engine
+        source = self.folder / 'original.jpg'
+        move = engine.move_no_replace
+        calls = 0
+        def block_after_first(a, b):
+            nonlocal calls
+            calls += 1
+            if calls > 1:
+                raise PermissionError('lock')
+            move(a, b)
+        with patch.object(engine, 'move_no_replace', side_effect=block_after_first):
+            with self.assertRaises(engine.RenameTransactionError) as caught:
+                engine.rename_batch([(source, source.with_name('changed.jpg'))])
+        journal = caught.exception.journal
+        with patch.object(gui.filedialog, 'askopenfilename', return_value=str(journal)):
+            self.mocks[1].return_value = False
+            self.app.recover_interrupted_batch()
+            self.assertTrue(journal.exists())
+            self.assertFalse(source.exists())
+            self.mocks[1].return_value = True
+            self.app.recover_interrupted_batch()
+        self.assertEqual(source.read_bytes(), b'PHOTO')
+        self.assertFalse(journal.exists())
+        self.mocks[-1].assert_not_called()
+
     def test_date_and_monitoring(self):
         self.app.use_date.set(True); self.app.refresh_preview()
         self.assertRegex(self.app.tree.set('0', 'new'), r'Arquivo_\d{4}-\d{2}-\d{2}_001.jpg')
@@ -147,6 +194,30 @@ class WindowsGuiTests(unittest.TestCase):
         (self.folder/'original.jpg').write_bytes(b'CHANGED')
         self.app.load_files(auto=True); self.pump()
         self.assertEqual(len(self.app.files), 3)
+
+
+@unittest.skipUnless(os.name == 'nt', 'Exige GUI Windows')
+class WindowsScalingTests(unittest.TestCase):
+    def test_startup_and_row_font_at_100_150_200_percent(self):
+        for percent in (100, 150, 200):
+            with self.subTest(percent=percent), tempfile.TemporaryDirectory() as temp:
+                with patch.object(gui, 'CONFIG_PATH', Path(temp) / 'preferences.json'):
+                    root = gui.TkinterDnD.Tk()
+                    root.withdraw()
+                    root.tk.call('tk', 'scaling', (96 / 72) * percent / 100)
+                    app = gui.MediaRenamer(root)
+                    try:
+                        root.update_idletasks()
+                        font = gui.tkfont.Font(root, font=('Segoe UI', 10))
+                        rowheight = int(app.style.lookup('Treeview', 'rowheight'))
+                        self.assertGreaterEqual(rowheight, font.metrics('linespace') + 10)
+                        self.assertLessEqual(root.minsize()[0], root.winfo_screenwidth())
+                        self.assertLessEqual(root.minsize()[1], root.winfo_screenheight())
+                        app.theme_mode.set('Escuro')
+                        app.apply_theme()
+                        self.assertEqual(rowheight, int(app.style.lookup('Treeview', 'rowheight')))
+                    finally:
+                        app.close_application()
 
 
 if __name__ == '__main__':

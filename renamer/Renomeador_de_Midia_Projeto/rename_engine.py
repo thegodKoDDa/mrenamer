@@ -100,13 +100,15 @@ def rename_batch(operations, progress=None):
     identifier = uuid.uuid4().hex
     records = [dict(original=str(old), temporary=str(old.with_name(
         f'.__renamer_tmp_{identifier}_{i}{old.suffix}')), target=str(new),
-        identity=[old.stat().st_dev, old.stat().st_ino])
+        identity=[old.stat().st_dev, old.stat().st_ino],
+        size=old.stat().st_size, mtime_ns=old.stat().st_mtime_ns)
         for i, (old, new) in enumerate(operations)]
-    journal = operations[0][0].parent / f'.__renamer_recovery_{identifier}.json'
+    journal_folder = Path(os.path.commonpath([old.parent for old, _ in operations]))
+    journal = journal_folder / f'.__renamer_recovery_{identifier}.json'
     # Mapa persistido ANTES do primeiro movimento. Ajuda em queda de energia ou
     # bloqueio durante rollback, sem alegar transação atômica do sistema inteiro.
     with journal.open('x', encoding='utf-8') as stream:
-        json.dump({'version': 1, 'operations': records}, stream, ensure_ascii=False, indent=2)
+        json.dump({'version': 2, 'operations': records}, stream, ensure_ascii=False, indent=2)
         stream.flush()
         os.fsync(stream.fileno())
     current = [Path(r['original']) for r in records]
@@ -155,3 +157,81 @@ def rename_batch(operations, progress=None):
         # Arquivos já chegaram aos destinos. Um mapa residual não desfaz sucesso.
         pass
     return operations
+
+
+def recovery_plan(journal):
+    """Inspeciona sem mover: recusa mapas antigos, alterados ou ambíguos."""
+    journal = Path(journal).absolute()
+    if journal.is_symlink() or journal.resolve() != journal:
+        raise ValueError('O mapa não pode usar links simbólicos.')
+    data = json.loads(journal.read_text(encoding='utf-8'))
+    if not isinstance(data, dict) or data.get('version') != 2:
+        raise ValueError('Mapa antigo ou inválido: recuperação manual necessária.')
+    records = data.get('operations')
+    if not isinstance(records, list) or not records:
+        raise ValueError('Mapa sem operações válidas.')
+    operations = []
+    identities = set()
+    inventories = {}
+    originals = set()
+    for record in records:
+        if not isinstance(record, dict):
+            raise ValueError('Registro de recuperação inválido.')
+        identity = record.get('identity')
+        if (not isinstance(identity, list) or len(identity) != 2
+                or any(type(n) is not int for n in identity) or not identity[1]
+                or tuple(identity) in identities
+                or type(record.get('size')) is not int
+                or type(record.get('mtime_ns')) is not int):
+            raise ValueError('Identidade de arquivo inválida ou repetida.')
+        identities.add(tuple(identity))
+        paths = []
+        for field in ('original', 'temporary', 'target'):
+            value = record.get(field)
+            if not isinstance(value, str) or not Path(value).is_absolute():
+                raise ValueError('Caminho inválido no mapa.')
+            path = Path(value)
+            if (path.resolve() != path or path.is_symlink()
+                    or not path.is_relative_to(journal.parent) or path == journal):
+                raise ValueError('Caminho fora da pasta do mapa ou com link simbólico.')
+            validate_name(path.name)
+            paths.append(path)
+        original, temporary, target = paths
+        if (len({p.parent for p in paths}) != 1
+                or len({p.suffix for p in paths}) != 1
+                or not temporary.name.startswith('.__renamer_tmp_')
+                or path_key(original) in originals):
+            raise ValueError('Caminhos inconsistentes ou origens repetidas no mapa.')
+        originals.add(path_key(original))
+        matches = []
+        for path in dict.fromkeys(paths):
+            if os.name == 'nt':
+                if path.parent not in inventories:
+                    inventories[path.parent] = {p.name.casefold(): p for p in path.parent.iterdir()}
+                path = inventories[path.parent].get(path.name.casefold(), path)
+            try:
+                stat = path.stat()
+            except FileNotFoundError:
+                continue
+            if [stat.st_dev, stat.st_ino] == identity:
+                if (not path.is_file() or stat.st_size != record['size']
+                        or stat.st_mtime_ns != record['mtime_ns']):
+                    raise ValueError(f'Arquivo alterado desde o lote: {path.name}')
+                # Windows pode identificar duas grafias do mesmo caminho.
+                if not any(path_key(path) == path_key(p) for p in matches):
+                    matches.append(path)
+        if len(matches) != 1:
+            raise ValueError(f'Arquivo ausente ou identidade ambígua: {original.name}')
+        operations.append((matches[0], original))
+    # Inclui noops na validação para detectar origens repetidas e conflitos.
+    return validate_operations(operations)
+
+
+def recover_journal(journal, expected_plan):
+    """Revalida a prévia confirmada antes de restaurar; nunca sobrescreve."""
+    plan = recovery_plan(journal)
+    if plan != expected_plan:
+        raise ValueError('O mapa ou os arquivos mudaram. Inspecione novamente.')
+    restored = rename_batch(plan)
+    Path(journal).unlink()  # Se falhar, o mapa residual continua inspecionável.
+    return restored

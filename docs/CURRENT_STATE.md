@@ -1,17 +1,17 @@
-# Estado atual — 25/10/2026
+# Estado atual — 26/10/2026
 
-Correções da revisão inicial entregues com nova distribuição Windows. Preservados produto, identidade visual, caminhos ativos, fontes originais e backups históricos.
+Recuperação assistida implementada em **Configurações → Recuperar lote interrompido…**, com inspeção, prévia, confirmação e revalidação. Preservados produto, identidade visual, fontes originais, stack e históricos.
 
-GUI em `renamer/Renomeador_de_Midia_Projeto/media_renamer.py`; motor sem GUI em `rename_engine.py`. Padrão e substituição têm prévias distintas; extensão preservada; validação global de nomes/conflitos; restauração após falhas; desfazer suporta ciclos. Monitoramento usa varredura em thread e descarte de resultados antigos, com buscas de seleção/estabilidade simplificadas.
+Fontes ativas: `renamer/Renomeador_de_Midia_Projeto/media_renamer.py` (GUI) e `rename_engine.py` (motor). Mapas novos versão 2 registram identidade, tamanho e mtime_ns; ficam na pasta ancestral comum às origens. Recuperação recusa arquivos ausentes/alterados, conflitos, links e mapas inconsistentes. Mapas versão 1 continuam manuais. O fluxo não inicia recuperação sozinho, nem garante atomicidade contra queda de energia. Manual e limites em user-guide.md e KNOWN_ISSUES.md.
 
-Build Windows: Python 3.13.15, PyInstaller 6.22.3, tkinterdnd2 0.6.3, versões instaladas fixadas sem reinstalação. As duas cópias ativas foram atualizadas e conferidas. Manifesto em `renamer final/build-manifest.json`; SHA-256 do executável: `7b8fe26f74ca2713779c37334dbd1de6ea0573acf8e40ca31b84032ca3b28bfa`. Cada compilação teve backups individuais prévios, todos preservados.
+Interface mantém a escala do Tk em vez de impor 1.1; janela inicial respeita os limites da tela e altura das linhas acompanha a fonte. Drop foi ampliado nos testes para listas Tcl com múltiplos arquivos, acentos, espaços e chaves, além de rejeições de pastas diferentes/itens misturados.
 
-Verificações: 32 casos do aplicativo cobertos no Windows (31 aprovados e um caso de symlink pulado por privilégio), incluindo oito testes de integração Tk; três testes de continuidade aprovados. Linux também validou os 24 testes comuns, incluindo symlink. Teste com bloqueio real de arquivo no Windows confirmou rollback sem temporários restantes. Executável compilado abriu e fechou normalmente, com código zero e preferências temporárias. As fontes foram confrontadas com o manifesto após a build.
+Validação: 44 casos Windows, 42 aprovados e dois symlinks pulados por privilégio; 44 casos Linux, 32 aprovados e 12 pulados por dependerem do Windows. Três testes de continuidade aprovados. Inclui encerramento abrupto de processo em cada movimento de um ciclo, recuperação pela GUI com cancelamento/confirmação, bloqueio real Windows e escalas Tk 100%/150%/200%.
 
-Limites: não há atomicidade contra queda de energia nem recuperação automática após reinício; mapa JSON preservado auxilia recuperação manual. Desfazer só existe na sessão. Grandes acervos/volumes de rede, gesto físico de drop e outros monitores/DPI não foram avaliados. Detalhes em KNOWN_ISSUES.
+Benchmark Windows reproduzível: `python scripts/benchmark.py --gui`, somente mídia fictícia/preferências temporárias. Com 1.000/10.000 arquivos: carregar lista + prévia 0,601/5,661 s; atualizar prévia 0,159/1,580 s; renomear 1,248/12,323 s. Cache aquecido e GUI recolhida; não representa rede nem garante responsividade. Tabela completa em development.md.
 
-GitHub público autorizado: https://github.com/thegodKoDDa/mrenamer, branch main. Executáveis, backups e checkpoints continuam locais; manifesto de proveniência e código/docs são versionados. Encerramento cria checkpoint com restauração temporária verificada, indicado por `.checkpoints/latest.json`.
+Build Windows `20261026T035150145944Z`: Python 3.13.15 e dependências fixadas mantidos. Executável abriu/fechou com código zero; duas cópias ativas atualizadas e conferidas, com backups individuais prévios preservados. SHA-256: `7949d7a1ed74431adcb9c270a047534f0b128e798b6340a3130c824547cdcffe`. Proveniência em `renamer final/build-manifest.json`.
 
-Próximos passos conforme uso real: validar gestos/DPI e desempenho em acervos grandes; avaliar recuperação assistida de mapas após interrupção. Retomar com `python3 scripts/continuity.py retomar`.
+Ainda dependem do ambiente físico: gesto real do Explorer e mudança entre monitores/DPI. Escala programática não substitui essas verificações. Grandes volumes/rede e responsividade durante carregamento/renomeação continuam limitados; o benchmark agora fornece referência local. Se a recuperação for interrompida e gerar outro mapa, resolver esse novo mapa antes do inicial.
 
-Sessão encerrada a pedido do usuário em 25/10/2026. Nenhuma mudança adicional no aplicativo após a build acima. Manter o fluxo de commit/envio revisado ao concluir alterações; GitHub não recebe executáveis ou dados locais.
+GitHub público autorizado: https://github.com/thegodKoDDa/mrenamer, branch main. Somente fontes/docs/testes/manifesto; executáveis, backups e checkpoints permanecem locais. Encerramento cria checkpoint com restauração temporária verificada, apontado por `.checkpoints/latest.json`. Retomar com `python3 scripts/continuity.py retomar`.

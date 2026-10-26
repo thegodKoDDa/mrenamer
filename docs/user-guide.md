@@ -17,6 +17,10 @@ Monitoramento atualiza a lista automaticamente, sem renomear sozinho. Downloads 
 
 DESFAZER restaura os nomes do último lote, inclusive trocas de nomes, durante a sessão atual. Não fica salvo ao fechar. LIMPAR encerra a pasta na tela, preservando opções do padrão e sem desfazer operações aplicadas.
 
-Em falha, o programa tenta restaurar os nomes anteriores e informa se conseguiu. Se a recuperação ficar incompleta, não repita o lote: guarde o caminho do mapa JSON e os arquivos indicados na mensagem. O mapa contém nomes originais, temporários e destinos para recuperação manual. Não apague temporários antes de recuperar.
+Em falha, o programa tenta restaurar os nomes anteriores e informa se conseguiu. Se a recuperação ficar incompleta, não repita o lote: guarde o caminho do mapa JSON e os arquivos indicados. Não apague temporários antes de recuperar.
+
+Para um lote interrompido desta versão, abra **Configurações → Recuperar lote interrompido…** e selecione o `.__renamer_recovery_*.json`. Ele fica na pasta comum às origens do lote (na própria pasta quando não há subpastas). Confira os nomes da prévia e confirme para restaurar os nomes anteriores. A inspeção verifica identidade, tamanho e data de modificação dos arquivos e recusa destinos ocupados, arquivos ausentes/alterados, links e mapas inconsistentes. Nada é recuperado automaticamente ao abrir o aplicativo.
+
+O mapa e as mídias precisam continuar nos caminhos originais. Mapas antigos (versão 1, sem tamanho/data) continuam exigindo recuperação manual; não os edite para mudar a versão. Identidade e metadados não são uma prova criptográfica do conteúdo. Em bloqueio persistente, mantenha o mapa e os arquivos. Se a própria recuperação for interrompida e deixar um novo mapa, resolva primeiro esse novo mapa e depois volte ao mapa inicial. Mapas residuais de um lote já concluído também permitem restaurar nomes: confira se é realmente o lote desejado. Se a restauração terminou, mas a remoção do mapa falhou, confira os nomes antes de tentar novamente.
 
 Queda de energia e bloqueios externos podem exigir recuperação manual. Para arquivos importantes, trabalhe primeiro com cópias. Checkpoints do código não incluem as mídias externas. Consulte [limites atuais](KNOWN_ISSUES.md).
