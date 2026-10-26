@@ -2,7 +2,10 @@
 
 Seus arquivos, com os nomes certos. Renomeador em lote para Windows, com prévia, sequências e substituição de texto.
 
+**[Baixar MediaRenamer.exe — Windows 64 bits](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/MediaRenamer.exe)** · [ZIP portátil](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/MediaRenamer-Windows-x64.zip) · [Todas as versões](https://github.com/thegodKoDDa/mrenamer/releases)
+
 [![Verificações](https://github.com/thegodKoDDa/mrenamer/actions/workflows/ci.yml/badge.svg)](https://github.com/thegodKoDDa/mrenamer/actions/workflows/ci.yml)
+[![Versão Windows](https://github.com/thegodKoDDa/mrenamer/actions/workflows/release.yml/badge.svg)](https://github.com/thegodKoDDa/mrenamer/actions/workflows/release.yml)
 
 ![Interface do mrenamer em tema escuro com arquivos fictícios de uma viagem](docs/assets/preview.png)
 
@@ -20,6 +23,18 @@ Seus arquivos, com os nomes certos. Renomeador em lote para Windows, com prévia
 
 ## Começar
 
+### Baixar e usar — recomendado
+
+1. **[Baixe o MediaRenamer.exe](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/MediaRenamer.exe)**.
+2. Abra o arquivo no Windows de 64 bits. Não precisa instalar Python nem executar comandos.
+3. Selecione sua pasta e confira a prévia antes de renomear.
+
+Prefere baixar tudo junto? Use o **[ZIP portátil](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/MediaRenamer-Windows-x64.zip)**, extraia e abra `MediaRenamer.exe`. Ele inclui o guia rápido e o manifesto da build.
+
+O link de download acompanha a **última versão estável publicada**. Mudanças no aplicativo em `main` geram uma nova release após testes, compilação e abertura/fechamento do executável. Se a validação falhar, a última versão aprovada continua disponível. Para atualizar uma cópia já baixada, feche o programa e baixe novamente; o aplicativo não se atualiza sozinho.
+
+[Histórico de releases](https://github.com/thegodKoDDa/mrenamer/releases) · [Hashes SHA-256](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/SHA256SUMS.txt) · [Manifesto da versão](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/build-manifest.json)
+
 ### Executar no Windows
 
 Requisitos: **Python 3.10 ou superior**, com Tkinter. O ambiente de distribuição é validado com Python 3.13.
@@ -32,7 +47,18 @@ python -m venv .venv
 .\.venv\Scripts\python.exe renamer/Renomeador_de_Midia_Projeto/media_renamer.py
 ```
 
-O repositório disponibiliza o código-fonte. Ainda não há instalador ou executável publicado em Releases. Para gerar o executável no Windows, consulte o [guia de desenvolvimento](docs/development.md).
+Sem Git, [baixe o código em ZIP](https://github.com/thegodKoDDa/mrenamer/archive/refs/heads/main.zip), extraia, abra o terminal na pasta do projeto e execute os comandos a partir de `python -m venv .venv`. Os arquivos “Source code” nas [Releases](https://github.com/thegodKoDDa/mrenamer/releases) correspondem às fontes daquela versão; não são o aplicativo pronto.
+
+### Gerar seu próprio executável
+
+Depois de preparar o ambiente acima, na raiz:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r renamer/Renomeador_de_Midia_Projeto/requirements-build.txt
+.\.venv\Scripts\python.exe scripts/build_windows.py
+```
+
+A build exige Windows e gera `renamer final/MediaRenamer.exe`, com testes e backups das cópias locais existentes. Veja o [guia de desenvolvimento](docs/development.md).
 
 ## Uso rápido
 

@@ -26,7 +26,7 @@ Se a política do PowerShell impedir a ativação, use `.\.venv\Scripts\python.e
 | `renamer original/` | Fontes históricas, sem desenvolvimento ativo |
 | `renamer final/build-manifest.json` | Proveniência da última distribuição local |
 
-Executáveis, ambientes virtuais, backups e checkpoints são locais e ficam fora do Git. O clone não contém `MediaRenamer.exe`; a primeira build cria as cópias ativas.
+Executáveis, ambientes virtuais, backups e checkpoints ficam fora do histórico Git. O clone não contém `MediaRenamer.exe`; os binários públicos são distribuídos como assets em Releases. A build local cria as cópias ativas.
 
 ## Verificações
 
@@ -43,7 +43,15 @@ No Linux, testes Windows são pulados; no Windows usar `python`. A suíte de GUI
 
 O workflow [Verificações](../.github/workflows/ci.yml) executa os testes em pushes para `main` e em pull requests. No Linux, usa o Python do sistema com Tkinter e pula os casos exclusivos de Windows. No Windows, prepara Python 3.13 com as dependências fixadas e executa também os testes Tk. Ambos executam os testes de continuidade. O job Windows usa o diretório temporário completo do runner para as fixtures, evitando o alias DOS 8.3 presente no TEMP padrão da imagem.
 
-O workflow verifica o código, sem gerar ou publicar executáveis. A entrega de uma alteração no aplicativo continua exigindo a rotina Windows abaixo.
+O workflow Verificações testa o código. O workflow separado [Publicar versão Windows](../.github/workflows/release.yml) também compila e publica uma release após mudanças nas fontes, specs, requisitos, testes, scripts ou automação em `main`. Pode ser iniciado manualmente em Actions, sempre na branch `main`.
+
+A publicação usa a rotina Windows abaixo, que roda testes e abre/fecha o executável. O job Linux também precisa passar. `scripts/package_release.py` confere as fontes e as cópias ativas contra o manifesto, exige PE x64 e prepara apenas o executável, o ZIP portátil, o manifesto com commit de origem e a lista SHA-256. Dados pessoais e backups não são incluídos.
+
+Cada execução cria uma versão `build-<execução>-<tentativa>-<commit>`, com assets de nomes estáveis. Primeiro cria um rascunho, baixa os assets de volta e confere os hashes e o conteúdo do ZIP. Só então publica e marca como Latest. O link `releases/latest/download/MediaRenamer.exe` acompanha a release publicada mais recente. Falhas preservam a última estável; rascunhos incompletos podem permanecer para diagnóstico, sem substituir o download público. Releases anteriores não são sobrescritas.
+
+A permissão `contents: write` fica limitada ao job de publicação, executado a partir de `main`. Pull requests rodam testes e não publicam. As publicações são serializadas para evitar uploads simultâneos; uma nova alteração pode aguardar o término da anterior. Os arquivos já baixados não são atualizados automaticamente.
+
+O manifesto público de cada release descreve a build produzida no runner. `renamer final/build-manifest.json` versionado descreve a distribuição local validada; builds do mesmo código em ambientes distintos podem ter hashes diferentes. SHA-256 verifica integridade, sem substituir assinatura digital. A build local continua seguindo a rotina abaixo.
 
 ## Build obrigatória após mudança no aplicativo
 

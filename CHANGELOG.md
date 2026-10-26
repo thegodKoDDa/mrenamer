@@ -4,6 +4,9 @@
 
 ### Adicionado
 
+- Download público de EXE Windows x64 e ZIP portátil em Releases, com links para a última versão estável.
+- Publicação automática após mudanças do aplicativo em main, condicionada a testes, build, smoke e hashes dos assets remotos.
+
 - Recuperação assistida em Configurações, com inspeção do mapa, prévia e confirmação antes de restaurar os nomes.
 - Mapas versão 2 com identidade, tamanho e data de modificação dos arquivos; suporte a lotes em subpastas pela pasta ancestral comum.
 - Benchmark reproduzível com 1.000 e 10.000 arquivos fictícios.

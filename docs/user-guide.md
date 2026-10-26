@@ -1,6 +1,8 @@
 # Manual do Renomeador de Mídia
 
-Para executar pelo código no Windows, siga a [instalação no README](../README.md#executar-no-windows). Se você já possui a distribuição local, abra `renamer final/MediaRenamer.exe`. O repositório não inclui o executável.
+A forma recomendada é [baixar o MediaRenamer.exe](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/MediaRenamer.exe) e abri-lo no Windows de 64 bits, sem instalar Python. O [ZIP portátil](https://github.com/thegodKoDDa/mrenamer/releases/latest/download/MediaRenamer-Windows-x64.zip) inclui o executável, o guia rápido e o manifesto: extraia antes de abrir.
+
+Para usar Python ou gerar uma build própria, siga as [outras formas de execução no README](../README.md#executar-no-windows). Para atualizar o executável, feche o aplicativo e baixe novamente pelo link da última versão estável. Não há atualização automática dentro do programa; as preferências permanecem no perfil do usuário.
 
 1. Selecione uma pasta ou arraste uma pasta para a janela. Arquivos arrastados juntos precisam pertencer à mesma pasta.
 2. Escolha o filtro de categoria e a ordenação. A busca por nome (Ctrl+F) restringe a lista visível.

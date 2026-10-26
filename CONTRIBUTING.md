@@ -22,7 +22,7 @@ python -m unittest discover -s scripts -p "test_*.py" -v
 
 No Linux, use `python3`; os testes específicos do Windows são pulados. Teste renomeações apenas em diretórios temporários com arquivos fictícios e preferências isoladas.
 
-Alterações no aplicativo também exigem build Windows, testes do executável e backup individual de cada cópia ativa antes da atualização. A rotina e os requisitos estão em [Desenvolvimento](docs/development.md). Mudanças apenas na documentação não exigem reconstruir o executável.
+Alterações no aplicativo também exigem build Windows, testes do executável e backup individual de cada cópia ativa antes da atualização. A rotina e os requisitos estão em [Desenvolvimento](docs/development.md). Mudanças apenas na documentação não exigem reconstruir o executável. Em `main`, a automação de Releases publica novas builds validadas quando arquivos do aplicativo ou da distribuição mudam; binários nunca devem ser adicionados ao Git.
 
 ## Enviar uma proposta
 

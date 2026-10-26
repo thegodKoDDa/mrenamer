@@ -22,4 +22,5 @@ Veja o procedimento no [manual de uso](user-guide.md).
 - Links simbólicos são recusados. As regressões passaram no Linux; no ambiente Windows de validação, foram puladas por falta de privilégio para criar links.
 - O campo de criação usa a semântica Windows de `st_ctime`. O comprimento máximo do caminho completo depende das políticas do Windows e do sistema de arquivos.
 - Os testes Windows cobrem widgets reais, listas Tcl de drop e escalas Tk de 100%, 150% e 200%. Gesto físico no Explorer, troca real entre monitores/DPI, telas pequenas e interferência de antivírus ainda precisam de validação manual.
-- O executável de distribuição local ainda não foi publicado em Releases nem assinado digitalmente.
+- O executável distribuído em Releases não possui assinatura digital. A lista SHA-256 confere integridade, sem substituir assinatura.
+- O link Latest acompanha a última build aprovada e publicada, não uma alteração ainda em testes. Falhas na automação mantêm a versão estável anterior. Cópias baixadas não recebem atualização automática.

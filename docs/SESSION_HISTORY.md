@@ -67,3 +67,13 @@
 - Validação local: 44 casos Linux (32 aprovados, 12 específicos do Windows pulados); 44 casos Windows (42 aprovados, dois symlinks pulados por privilégio); três testes de continuidade aprovados. Links, YAML e captura revisados. Fontes e binários preservados, sem necessidade de nova build.
 - Envio acompanhado da execução remota inicial do workflow; fechamento com revisão dos arquivos públicos, sincronização de main e checkpoint com restauração verificada.
 - Primeira execução remota: Linux aprovado; Windows revelou que o TEMP padrão da imagem usa caminho DOS 8.3 (`RUNNER~1`), recusado pela verificação conservadora dos mapas. Job ajustado para usar `runner.temp` como TEMP/TMP, sem alterar ou desativar as validações do motor. Restrição de caminhos abreviados documentada em KNOWN_ISSUES.
+
+## 26/10/2026 — Distribuição pública e atualização das Releases
+
+- Pedido: oferecer várias formas de uso, priorizando baixar e abrir o EXE mais atualizado. Autorização ampliada explicitamente para binários em Releases e publicação automática; a exclusão de executáveis do histórico Git e a privacidade dos dados locais continuam vigentes.
+- Checkpoint anterior `20261026T041405739902Z` criado e restaurado/verificado antes da mudança. Sem alteração nas fontes do aplicativo ou nas cópias locais de executáveis.
+- README passa a destacar download direto do EXE Windows x64 e ZIP portátil, além de código por clone/ZIP e build própria. Links Latest acompanham a última release estável; cópias já baixadas não atualizam sozinhas.
+- Workflow release.yml testa no Linux, instala ambiente fixado no Windows e executa build_windows.py (testes, backups de cópias existentes, compilação e abertura/fechamento do EXE). Publicação limitada à main, serializada e com permissão de escrita apenas no job responsável.
+- package_release.py valida inventário/hashes das fontes e cópias ativas, exige PE x64 e produz somente EXE, ZIP com guia/manifesto, manifesto com commit e lista SHA-256. O workflow cria rascunho, baixa os assets e confere hashes/conteúdo antes de publicar como Latest. Versões anteriores permanecem preservadas.
+- Quatro testes novos de empacotamento aprovados junto aos três de continuidade; cobrem conteúdo público do pacote, divergência de fontes/binários, corrupção no download e proteção contra sobrescrever a saída. Empacotamento local real também conferido contra o manifesto, sem publicar o pacote de teste.
+- Documentação, regras permanentes, memória e estado atual atualizados para refletir a autorização e as formas de distribuição. Envio acompanhado da primeira release e conferência dos downloads públicos antes do encerramento.

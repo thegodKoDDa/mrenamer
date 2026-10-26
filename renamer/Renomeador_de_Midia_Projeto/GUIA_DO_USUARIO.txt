@@ -8,5 +8,10 @@ RENOMEADOR DE MÍDIA — GUIA RÁPIDO
 
 Em Configurações, ajuste o tema e o monitoramento. Recuperar lote interrompido permite selecionar um mapa versão 2, inspecionar a prévia e confirmar a restauração. Mapas antigos ou arquivos alterados podem exigir recuperação manual. Não apague mapas ou temporários antes de conferir os arquivos.
 
-Manual completo: docs/user-guide.md
+Baixar ou atualizar o executável (Windows 64 bits):
+https://github.com/thegodKoDDa/mrenamer/releases/latest/download/MediaRenamer.exe
+
+Feche o programa antes de substituir a cópia anterior. Não há atualização automática dentro do aplicativo.
+
+Manual completo: https://github.com/thegodKoDDa/mrenamer/blob/main/docs/user-guide.md
 Código-fonte e documentação: https://github.com/thegodKoDDa/mrenamer
