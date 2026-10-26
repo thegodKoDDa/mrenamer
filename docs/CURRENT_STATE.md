@@ -1,6 +1,6 @@
 # Estado atual — 26/10/2026
 
-Apresentação pública reorganizada: README voltado ao produto e à instalação, navegação por uso/desenvolvimento/manutenção, changelog consolidado, guia de contribuição e modelos de issues/PR. Descrição e tópicos do GitHub atualizados. Esta revisão altera somente documentação e metadados; fontes e executáveis mantêm a build abaixo.
+Apresentação pública reorganizada: README voltado ao produto e à instalação, navegação por uso/desenvolvimento/manutenção, changelog consolidado, guia de contribuição e modelos de issues/PR. Descrição e tópicos do GitHub atualizados. Apresentação visual ampliada com captura real da interface em `docs/assets/preview.png`, dados fictícios e selo do workflow Verificações. `.github/workflows/ci.yml` executa testes do aplicativo e da continuidade no Linux e no Windows. Esta revisão altera documentação e automação; fontes e executáveis mantêm a build abaixo.
 
 Recuperação assistida implementada em **Configurações → Recuperar lote interrompido…**, com inspeção, prévia, confirmação e revalidação. Preservados produto, identidade visual, fontes originais, stack e históricos.
 

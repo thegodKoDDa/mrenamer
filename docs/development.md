@@ -39,6 +39,12 @@ python3 -m unittest discover -s scripts -p 'test_*.py' -v
 
 No Linux, testes Windows são pulados; no Windows usar `python`. A suíte de GUI abre widgets reais com janela recolhida e arquivos/preferências temporários; cobre padrão, substituição, desfazer, datas, busca, seleção, ordenação, tema, Configurações e drop simulado. Não substitui validação manual de gesto físico/monitores/DPI.
 
+### Integração contínua
+
+O workflow [Verificações](../.github/workflows/ci.yml) executa os testes em pushes para `main` e em pull requests. No Linux, usa o Python do sistema com Tkinter e pula os casos exclusivos de Windows. No Windows, prepara Python 3.13 com as dependências fixadas e executa também os testes Tk. Ambos executam os testes de continuidade.
+
+O workflow verifica o código, sem gerar ou publicar executáveis. A entrega de uma alteração no aplicativo continua exigindo a rotina Windows abaixo.
+
 ## Build obrigatória após mudança no aplicativo
 
 Criar checkpoint antes da mudança estrutural. Após editar, executar na raiz com Python Windows:

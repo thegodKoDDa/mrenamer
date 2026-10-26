@@ -13,6 +13,7 @@
 
 - Inicialização usa a escala do Tk e limita o tamanho da janela à tela; a altura das linhas acompanha a fonte.
 - Documentação, README e navegação do repositório reorganizados; adicionados guia de contribuição e modelos de issues.
+- Apresentação com captura real da interface usando dados fictícios e selo de verificações; integração contínua no Linux e no Windows.
 
 A distribuição Windows foi reconstruída e validada nas duas cópias locais, com backups individuais. Mapas versão 1 continuam exigindo recuperação manual.
 

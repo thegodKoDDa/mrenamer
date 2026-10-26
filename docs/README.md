@@ -8,7 +8,7 @@
 
 ## Desenvolver
 
-- [Desenvolvimento](development.md): ambiente, testes, compilação Windows e benchmark.
+- [Desenvolvimento](development.md): ambiente, testes, GitHub Actions, compilação Windows e benchmark.
 - [Arquitetura](architecture.md): responsabilidades do código e fluxo dos arquivos.
 - [Contribuição](../CONTRIBUTING.md): como propor e validar alterações.
 

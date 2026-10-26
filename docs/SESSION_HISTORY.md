@@ -57,3 +57,12 @@
 - Descrição e seis tópicos do repositório atualizados e conferidos pela API com autenticação Git reutilizada em memória. Nenhuma credencial incluída em arquivos ou saída. Integração disponível não oferece edição desses metadados, por isso foi usada a CLI.
 - Links locais de Markdown e estrutura dos modelos YAML validados; três testes de continuidade aprovados. Fontes, executáveis e manifesto de build conferidos sem mudança; nenhuma reconstrução necessária para esta entrega documental.
 - Revisão da seleção pública antes do commit/envio; mídias, executáveis, backups, checkpoints e preferências permanecem locais. Encerramento inclui checkpoint restaurado/verificado e conferência da sincronização com main remota.
+
+## 26/10/2026 — Apresentação visual e verificações automáticas
+
+- Pedido: aproximar a apresentação do formato do Minecoord disponível localmente. Consultados apenas README, índice de documentação e workflow do projeto de referência, sem modificá-lo ou transferir regras/stack/licença.
+- Checkpoint prévio `20261026T040206099934Z` criado e restaurado/verificado. README recebeu abertura curta, captura real da GUI com arquivos fictícios, selo de verificações e navegação semelhante à referência, mantendo as instruções próprias do mrenamer.
+- Prévia em `docs/assets/preview.png` capturada da própria janela Tk no Windows; pasta e preferências temporárias, sem mídia ou caminho pessoal. Captura inspecionada visualmente. Uma primeira limpeza temporária falhou por o processo ainda estar dentro da pasta; ajustado o diretório de trabalho antes de encerrar e a pasta fictícia foi removida.
+- Workflow Verificações adicionado para Linux e Windows, com permissões de leitura, testes do aplicativo e de continuidade. Não compila nem publica executáveis. Documentação responsável e changelog atualizados.
+- Validação local: 44 casos Linux (32 aprovados, 12 específicos do Windows pulados); 44 casos Windows (42 aprovados, dois symlinks pulados por privilégio); três testes de continuidade aprovados. Links, YAML e captura revisados. Fontes e binários preservados, sem necessidade de nova build.
+- Envio acompanhado da execução remota inicial do workflow; fechamento com revisão dos arquivos públicos, sincronização de main e checkpoint com restauração verificada.
