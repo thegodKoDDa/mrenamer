@@ -47,3 +47,13 @@
 - Build `20261026T035150145944Z` entregue: `7949d7a1ed74431adcb9c270a047534f0b128e798b6340a3130c824547cdcffe`. Backups individuais em `backups/MediaRenamer_20261026T035150145944Z/`, duas cópias ativas conferidas e executável abriu/fechou com códigos zero. Nenhum histórico sobrescrito.
 - Pendências físicas permanecem explícitas: gesto do Explorer, monitores/DPI reais e rede não foram validados. Operações grandes ainda podem pausar a GUI; não houve promessa de recuperação automática ou resistência a queda de energia.
 - Documentação, arquivos novos e manifesto revisados; finalização inclui sincronização de fontes/documentação com GitHub e checkpoint restaurado/verificado.
+
+## 26/10/2026 — Organização da apresentação pública
+
+- Pedido: publicar as alterações e organizar o GitHub com apresentação profissional e sem informações desnecessárias. Rotina retomar executada; checkpoint prévio `20261026T035602558112Z` restaurado/verificado antes da revisão.
+- README reescrito com proposta do produto, recursos, instalação em ambiente virtual Windows, exemplo de nomes, limites essenciais e links de documentação. Não anuncia executável disponível em Releases.
+- Índice documental separado em uso, desenvolvimento e manutenção; changelog consolidado por data e impacto no produto. Limites conhecidos agrupados sem repetir a lista de correções já registrada no changelog. Guias ativos de texto atualizados para recuperação assistida.
+- Adicionados CONTRIBUTING e modelos curtos de issues de erro/melhoria e de pull request. README da pasta ativa simplificado; removido PROJECT_CONTEXT.md, que duplicava referências da documentação. Originais históricos, decisões e registros de sessões preservados.
+- Descrição e seis tópicos do repositório atualizados e conferidos pela API com autenticação Git reutilizada em memória. Nenhuma credencial incluída em arquivos ou saída. Integração disponível não oferece edição desses metadados, por isso foi usada a CLI.
+- Links locais de Markdown e estrutura dos modelos YAML validados; três testes de continuidade aprovados. Fontes, executáveis e manifesto de build conferidos sem mudança; nenhuma reconstrução necessária para esta entrega documental.
+- Revisão da seleção pública antes do commit/envio; mídias, executáveis, backups, checkpoints e preferências permanecem locais. Encerramento inclui checkpoint restaurado/verificado e conferência da sincronização com main remota.

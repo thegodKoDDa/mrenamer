@@ -1,32 +1,35 @@
 # Changelog
 
-## 2026-10-25 — Organização e continuidade
+## 2026-10-26
 
-- Revisão do projeto legado e documentação das prioridades técnicas.
-- Ponto de entrada documental na raiz, regras de manutenção, estado atual, memória e histórico.
-- Recuperação local verificada com manifesto SHA-256, exclusões de gerados/dados privados e três testes automatizados.
-- Regras de controle de versão para fontes e documentação; distribuição e backups permanecem locais.
-- Aplicativo, identidade visual, caminhos, executáveis e versões anteriores preservados.
+### Adicionado
 
-## 2026-10-25 — GitHub público
+- Recuperação assistida em Configurações, com inspeção do mapa, prévia e confirmação antes de restaurar os nomes.
+- Mapas versão 2 com identidade, tamanho e data de modificação dos arquivos; suporte a lotes em subpastas pela pasta ancestral comum.
+- Benchmark reproduzível com 1.000 e 10.000 arquivos fictícios.
+- Testes de interrupção abrupta, recuperação, conflitos, subpastas, drop com Unicode e escalas Tk de 100%, 150% e 200%.
 
-- Repositório público `thegodKoDDa/mrenamer` para código e documentação.
-- Executáveis, backups, configurações privadas e checkpoints mantidos locais.
+### Ajustado
 
-## 2026-10-25 — Correções e build Windows
+- Inicialização usa a escala do Tk e limita o tamanho da janela à tela; a altura das linhas acompanha a fonte.
+- Documentação, README e navegação do repositório reorganizados; adicionados guia de contribuição e modelos de issues.
 
-- Renomeação com validação global, proteção contra sobrescrita e restauração após falhas; mapa persistente para recuperação manual incompleta.
-- Desfazer com suporte a trocas/ciclos, extensão preservada e prévias separadas para padrão e substituição.
-- Entradas numéricas/nomes Windows validados sem quebrar a interface; progresso de erro correto.
-- Monitoramento em thread, descarte de resultados antigos e remoção de buscas repetidas.
-- Dependências fixadas, spec consolidado, manuais atualizados e suíte de regressão/integração Windows.
-- Nova build Windows testada e distribuída localmente nas duas cópias ativas, com backups individuais e manifesto de proveniência.
+A distribuição Windows foi reconstruída e validada nas duas cópias locais, com backups individuais. Mapas versão 1 continuam exigindo recuperação manual.
 
-## 2026-10-26 — Recuperação assistida e validação de uso
+## 2026-10-25
 
-- Recuperação explícita de lotes interrompidos em Configurações: inspeção, prévia, confirmação e revalidação sem sobrescrever destinos.
-- Mapas versão 2 com tamanho/data e pasta comum às origens; mapas históricos mantidos para recuperação manual.
-- Removida escala fixa na inicialização; janela acompanha escala Tk dentro da tela e linhas acompanham a fonte.
-- Regressões para interrupção abrupta de processo, ciclos, conflitos, alterações externas, subpastas, drop Unicode e escalas 100%/150%/200%.
-- Benchmark reproduzível de 1.000/10.000 arquivos fictícios e limites físicos/de rede explicitados.
-- Build Windows gerada, testada e atualizada nas duas cópias ativas com backups individuais e hashes conferidos; 42 testes Windows aprovados (dois symlinks pulados).
+### Corrigido
+
+- Validação global de nomes, conflitos e extensões antes de renomear.
+- Proteção contra sobrescrita e restauração após falhas, com mapa persistente para recuperação.
+- Desfazer com suporte a trocas e ciclos de nomes.
+- Prévia separada para Padrão e Substituição; substituição preserva a extensão.
+- Entradas numéricas inválidas bloqueadas com mensagem na interface.
+- Monitoramento de pastas em thread, com descarte de resultados desatualizados.
+
+### Adicionado
+
+- Motor independente da interface e suíte de regressão e integração Windows.
+- Build com dependências fixadas, backups, teste de abertura/fechamento e manifesto de proveniência.
+- Documentação de uso, desenvolvimento e recuperação; checkpoints locais verificados.
+- Publicação do código-fonte no GitHub, com originais históricos preservados.

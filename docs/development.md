@@ -1,10 +1,32 @@
 # Desenvolvimento e distribuição
 
-Python/Tkinter e distribuição Windows preservados. Testar somente com arquivos fictícios em pastas temporárias. Não modificar preferências reais em testes.
+O aplicativo usa Python, Tkinter/ttk e tkinterdnd2; a distribuição Windows é gerada com PyInstaller. Use arquivos fictícios em diretórios temporários e preferências isoladas nos testes.
 
 ## Execução e dependências
 
-Na pasta `renamer/Renomeador_de_Midia_Projeto`, executar `python media_renamer.py` com Python Windows. Quando o ambiente ainda não possui dependências, instalar `python -m pip install -r requirements-build.txt`. As versões fixadas refletem o ambiente validado: Python 3.13.15, PyInstaller 6.22.3 e tkinterdnd2 0.6.3. Não instalar/atualizar por rotina.
+Para executar pelo código, siga a instalação em ambiente virtual no [README](../README.md). O ambiente de empacotamento validado usa Python 3.13.15, PyInstaller 6.22.3 e tkinterdnd2 0.6.3. As dependências são fixadas; atualizações devem ser avaliadas separadamente.
+
+Para preparar um novo ambiente de build no Windows, ative o ambiente virtual e instale os requisitos a partir da raiz:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r renamer/Renomeador_de_Midia_Projeto/requirements-build.txt
+```
+
+Se a política do PowerShell impedir a ativação, use `.\.venv\Scripts\python.exe` no lugar de `python`, sem alterar a política do sistema.
+
+### Estrutura do projeto
+
+| Caminho | Conteúdo |
+| --- | --- |
+| `renamer/Renomeador_de_Midia_Projeto/` | Fontes ativas, dependências e specs |
+| `tests/` | Testes do motor e da interface Windows |
+| `scripts/` | Build, benchmark e continuidade |
+| `docs/` | Documentação de uso e manutenção |
+| `renamer original/` | Fontes históricas, sem desenvolvimento ativo |
+| `renamer final/build-manifest.json` | Proveniência da última distribuição local |
+
+Executáveis, ambientes virtuais, backups e checkpoints são locais e ficam fora do Git. O clone não contém `MediaRenamer.exe`; a primeira build cria as cópias ativas.
 
 ## Verificações
 

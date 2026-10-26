@@ -1,31 +1,24 @@
-# Pendências conhecidas
+# Limites conhecidos
 
-## Corrigido em 25/10/2026
+## Renomeação e recuperação
 
-- Renomeação em duas fases agora tenta restaurar todas as origens ao falhar. Erros informam progresso real e se a restauração foi completa. Um mapa JSON persistido antes dos movimentos permite localizar origens, temporários e destinos caso a recuperação fique incompleta.
-- Desfazer usa o mesmo motor transacional, incluindo trocas e ciclos de nomes.
-- Substituição preserva a extensão e valida o lote inteiro, incluindo colisões sem distinção de caixa, arquivos existentes e nomes Windows inválidos.
-- Prévia possui modos explícitos Padrão/Substituição; cada botão mostra a prévia correspondente antes da confirmação. Campos de substituição não modificam silenciosamente o padrão.
-- Campos numéricos inválidos mostram erro na tela e impedem a operação, sem quebrar callbacks.
-- Nenhuma operação substitui destinos criados por outro processo entre validação e movimento.
-- Monitoramento varre diretórios em uma thread sem chamadas Tk. Resultados de um contexto antigo são descartados; assinaturas anteriores detectam alterações de tamanho/data. Removidas buscas repetidas de seleção e chaves na prévia/estabilidade.
-- Dependências da build foram fixadas nas versões já instaladas e verificadas. Build temporária, backups individuais, teste do executável e manifesto de fonte/ambiente/hash fazem parte da entrega.
-- Spec alternativo delega ao canônico; documentação e guias ativos atualizados. Originais históricos continuam preservados.
+- O lote não é uma transação atômica do sistema de arquivos. Queda de energia, remoção externa, disco indisponível ou bloqueios podem interromper a operação e a tentativa de restauração.
+- **Desfazer** existe apenas na sessão atual e restaura nomes, sem reverter alterações no conteúdo. Evite outros programas modificando os mesmos arquivos durante o lote.
+- A recuperação assistida exige um mapa versão 2 e os arquivos nos caminhos registrados. Mapas versão 1, arquivos ausentes ou metadados alterados podem exigir recuperação manual. Não há retomada automática ao reiniciar.
+- Se a recuperação também for interrompida e gerar um novo mapa, resolva esse mapa antes de voltar ao inicial. Um mapa residual pode permanecer se sua remoção falhar; confira os nomes e as identidades antes de restaurar. Não execute mapas como código.
+- Os testes simulam encerramento abrupto de processo, incluindo ciclos de nomes. Não simulam corte de energia ou garantem persistência física do sistema de arquivos.
 
-## Limites atuais
+Veja o procedimento no [manual de uso](user-guide.md).
 
-- O lote não é uma transação atômica do filesystem. Queda de energia, remoção externa, disco indisponível ou bloqueio também durante rollback podem exigir recuperação pelo `.__renamer_recovery_*.json`. Há recuperação assistida explícita em Configurações para mapas versão 2; mapas versão 1 ou arquivos indisponíveis/alterados ainda exigem tratamento manual. Não há retomada automática após reiniciar.
-- Desfazer fica em memória e se perde ao fechar. Alterações externas no conteúdo não são revertidas. Não executar outro programa alterando os mesmos arquivos simultaneamente.
-- Um mapa residual pode permanecer se sua remoção falhar depois de sucesso/rollback; conferir os arquivos e as identidades registradas antes de recuperar manualmente. Não executar o mapa como código.
-- Varredura automática foi retirada da thread da GUI; abertura manual de pasta, estatísticas e renderização da tabela ainda podem demorar em grandes acervos ou volumes de rede. Benchmark sintético Windows com 1.000/10.000 arquivos foi executado em 26/10/2026; resultados e limites em development.md. Com 10.000 arquivos houve 5,66 s para carregar a lista e 12,32 s para renomear; essas operações ainda podem pausar a interface. Rede, milhões de itens e arquivos grandes não foram medidos.
-- Estabilidade de tamanho em duas observações não garante que uma cópia terminou.
-- st_ctime segue a semântica Windows para o campo de criação. Comprimento do caminho completo também depende das políticas Windows/filesystem; nomes individuais são validados.
-- Symlinks são recusados. A regressão de symlinks passou no Linux e foi pulada no Windows por falta de privilégio para criá-los.
-- Testes Windows cobrem widgets/callbacks reais, drop com lista Tcl (múltiplos arquivos, acentos/espaços/chaves e rejeição de misturas/pastas diferentes), escala Tk de 100%/150%/200%, altura de linhas e limites da janela. Removida a escala fixa 1.1. O gesto físico do Explorer, mudança real entre monitores/DPI, telas pequenas e interferência de antivírus ainda exigem validação manual; não são cobertos pela simulação.
-- O executável local não foi publicado como release nem assinado digitalmente.
+## Desempenho e monitoramento
 
-## Entregue em 26/10/2026
+- A varredura automática usa uma thread, mas carregamento manual, metadados, tabela e renomeação ainda podem pausar a interface em lotes grandes.
+- No benchmark local com 10.000 arquivos fictícios, carregar a lista levou 5,66 s e renomear levou 12,32 s. Volumes de rede, milhões de itens e arquivos grandes não foram medidos. Consulte a [metodologia e os resultados](development.md#benchmark-e-validações-de-uso--26102026).
+- Tamanho estável em duas observações não garante que uma cópia ou download terminou.
 
-- Recuperação assistida de mapas versão 2, com prévia e confirmação, bloqueio de identidades ausentes/ambíguas, alterações de tamanho/data, caminhos externos/links e conflitos; revalidação antes dos movimentos.
-- Testes encerram processo isolado abruptamente após cada movimento de um ciclo e verificam a restauração do conteúdo fictício. Isso simula interrupção de processo, não corte de energia nem persistência física do filesystem.
-- Mapas registram a pasta comum às origens para permitir lotes em subpastas. Arquivos e mapa não devem ser movidos antes de recuperar. Interrupção durante a recuperação pode produzir outro mapa a resolver antes do inicial.
+## Compatibilidade e interface
+
+- Links simbólicos são recusados. As regressões passaram no Linux; no ambiente Windows de validação, foram puladas por falta de privilégio para criar links.
+- O campo de criação usa a semântica Windows de `st_ctime`. O comprimento máximo do caminho completo depende das políticas do Windows e do sistema de arquivos.
+- Os testes Windows cobrem widgets reais, listas Tcl de drop e escalas Tk de 100%, 150% e 200%. Gesto físico no Explorer, troca real entre monitores/DPI, telas pequenas e interferência de antivírus ainda precisam de validação manual.
+- O executável de distribuição local ainda não foi publicado em Releases nem assinado digitalmente.

@@ -1,13 +1,22 @@
 # Documentação
 
-- [Estado atual](CURRENT_STATE.md): situação e próximo passo.
-- [Memória](PROJECT_MEMORY.md): decisões duráveis.
-- [Arquitetura](architecture.md): código, dados e distribuição.
-- [Desenvolvimento](development.md): execução, testes e build Windows.
-- [Continuidade](continuity.md): retomada, checkpoint e recuperação.
-- [Manual atual](user-guide.md): uso do programa.
-- [Revisão inicial](review-2026-10-25.md): escopo e evidências.
-- [Pendências conhecidas](KNOWN_ISSUES.md): prioridades técnicas.
-- [Histórico de sessões](SESSION_HISTORY.md): registro cumulativo.
+## Usar o aplicativo
 
-README e PROJECT_CONTEXT dentro da pasta do aplicativo apontam para esta documentação canônica. O acervo em renamer original permanece histórico.
+- [Manual de uso](user-guide.md): carregar arquivos, configurar nomes, desfazer e recuperar lotes.
+- [Limites conhecidos](KNOWN_ISSUES.md): restrições e cenários ainda não validados.
+- [Histórico de versões](../CHANGELOG.md): alterações do produto.
+
+## Desenvolver
+
+- [Desenvolvimento](development.md): ambiente, testes, compilação Windows e benchmark.
+- [Arquitetura](architecture.md): responsabilidades do código e fluxo dos arquivos.
+- [Contribuição](../CONTRIBUTING.md): como propor e validar alterações.
+
+## Manutenção
+
+- [Continuidade e recuperação](continuity.md): checkpoints locais e verificação de restauração.
+- [Estado atual](CURRENT_STATE.md): última entrega e verificações.
+- [Memória do projeto](PROJECT_MEMORY.md): decisões de manutenção.
+- [Histórico de sessões](SESSION_HISTORY.md): registro das intervenções.
+
+As fontes originais e a revisão inicial são preservadas como histórico; não representam a versão atual do aplicativo.

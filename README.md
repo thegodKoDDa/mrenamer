@@ -1,51 +1,60 @@
-# mrenamer — Renomeador de Mídia
+# mrenamer
 
-Aplicativo desktop para Windows, feito em Python/Tkinter, para renomear arquivos em lote com prévia, filtros, contador, datas, substituição de texto e desfazer. Projeto preservado da versão desenvolvida no Cursor/VS Code.
+**Renomeie arquivos em lote, com prévia antes de aplicar.**
 
-Código público: [thegodKoDDa/mrenamer](https://github.com/thegodKoDDa/mrenamer). Executáveis e backups continuam locais; esta publicação não inclui uma release binária.
+Aplicativo desktop para Windows que organiza nomes de fotos, vídeos, áudios e documentos. Crie sequências, inclua datas ou substitua trechos dos nomes, preservando as extensões originais.
 
-Abra `renamer final/MediaRenamer.exe` no Windows. O [manual](docs/user-guide.md) descreve os recursos; veja as [limitações conhecidas](docs/KNOWN_ISSUES.md) antes de trabalhar com arquivos importantes.
+[Manual de uso](docs/user-guide.md) · [Desenvolvimento](docs/development.md) · [Histórico de versões](CHANGELOG.md)
 
-Para executar pelo código no Windows, com Python 3.10+ e Tkinter:
+## Recursos
+
+- **Prévia de nomes:** confira o resultado dos modos Padrão e Substituição antes de confirmar.
+- **Sequências personalizadas:** combine nome base, separador, contador e data opcional.
+- **Busca e seleção:** filtre por categoria, ordene a lista e escolha quais arquivos alterar.
+- **Pastas e subpastas:** carregue pelo seletor ou por arrastar e soltar; acompanhe alterações na pasta.
+- **Validação do lote:** detecte nomes inválidos e destinos conflitantes antes da renomeação.
+- **Desfazer e recuperação:** reverta o último lote na sessão ou inspecione um mapa de lote interrompido.
+- **Tema claro e escuro:** ajuste a aparência nas configurações.
+
+## Executar no Windows
+
+Requisitos: **Python 3.10 ou superior**, com Tkinter. O ambiente de distribuição é validado com Python 3.13.
 
 ```powershell
-cd renamer/Renomeador_de_Midia_Projeto
-python -m pip install -r requirements-build.txt
-python media_renamer.py
+git clone https://github.com/thegodKoDDa/mrenamer.git
+cd mrenamer
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r renamer/Renomeador_de_Midia_Projeto/requirements.txt
+.\.venv\Scripts\python.exe renamer/Renomeador_de_Midia_Projeto/media_renamer.py
 ```
 
-A instalação é necessária apenas em um ambiente ainda sem dependências. A versão executável dispensa Python instalado. O suporte de arrastar/soltar usa tkinterdnd2.
+O repositório disponibiliza o código-fonte. Ainda não há instalador ou executável publicado em Releases. Para gerar o executável no Windows, consulte o [guia de desenvolvimento](docs/development.md).
 
-## Organização
+## Uso rápido
 
-| Caminho | Responsabilidade |
+1. Escolha uma pasta e selecione os arquivos.
+2. Configure uma sequência no modo **Padrão** ou preencha os campos de **Substituição**.
+3. Confira a coluna **Novo nome** e confirme a operação.
+
+Exemplo de sequência:
+
+```text
+IMG_4821.jpg  →  Viagem_001.jpg
+IMG_4822.jpg  →  Viagem_002.jpg
+```
+
+A renomeação altera o nome, sem converter o formato ou o conteúdo. **Desfazer** funciona durante a sessão. A recuperação de lotes interrompidos exige um mapa compatível e confirmação; ela não ocorre automaticamente após reiniciar. Consulte o [manual](docs/user-guide.md) e os [limites conhecidos](docs/KNOWN_ISSUES.md).
+
+## Documentação
+
+| Guia | Conteúdo |
 | --- | --- |
-| `AGENTS.md` | Regras para agentes e manutenção |
-| `docs/` | Estado atual, memória, arquitetura, revisão e continuidade |
-| `scripts/` | Rotinas locais de recuperação e seus testes |
-| `renamer/Renomeador_de_Midia_Projeto/` | GUI, motor de renomeação, dependências fixadas e spec |
-| `renamer final/` | Distribuição Windows atual e guia legado |
-| `renamer original/` | Versão original preservada, sem desenvolvimento ativo |
-| `backups/` | Histórico local de executáveis, preservado |
-| `.checkpoints/` | Recuperação local verificada; fora do Git |
-| `build/`, `dist/` em qualquer nível | Artefatos de empacotamento |
+| [Manual](docs/user-guide.md) | Uso, seleção, modos de renomeação e recuperação |
+| [Desenvolvimento](docs/development.md) | Ambiente, testes, build Windows e benchmark |
+| [Arquitetura](docs/architecture.md) | Interface, motor e fluxo de renomeação |
+| [Limites conhecidos](docs/KNOWN_ISSUES.md) | Restrições e validações pendentes |
+| [Changelog](CHANGELOG.md) | Evolução do produto |
 
-Os caminhos do aplicativo foram mantidos para preservar comandos, distribuição e referências existentes. O motor de validação/renomeação foi separado da GUI, com testes e distribuição Windows atualizada.
+## Contribuir
 
-## Retomar e encerrar
-
-Na raiz, com Python 3.10+ (`python3` no Linux/WSL; `python` no Windows):
-
-```sh
-python3 scripts/continuity.py retomar
-python3 -m unittest discover -s tests -v
-python3 -m unittest discover -s scripts -p 'test_*.py' -v
-python3 scripts/continuity.py encerrar
-python3 scripts/continuity.py verificar
-```
-
-Leia [CURRENT_STATE](docs/CURRENT_STATE.md) e [PROJECT_MEMORY](docs/PROJECT_MEMORY.md) ao retomar. O checkpoint inclui código, documentação e executáveis em `dist/` e `renamer final/`; backups históricos e gerados de build ficam fora dos checkpoints rotineiros. Nenhuma mídia externa escolhida no aplicativo entra nessa cópia.
-
-Mudanças no aplicativo exigem backup individual dos executáveis, testes e compilação no Windows antes da entrega. A rotina `python scripts/build_windows.py`, executada com Python Windows na raiz, realiza esse fluxo e registra a proveniência, conforme [desenvolvimento](docs/development.md). Mudanças somente na documentação ou nas ferramentas locais de continuidade não alteram o aplicativo distribuído.
-
-[Índice da documentação](docs/README.md) · [Changelog](CHANGELOG.md)
+Consulte o [guia de contribuição](CONTRIBUTING.md). Para relatar um problema ou propor uma melhoria, [abra uma issue](https://github.com/thegodKoDDa/mrenamer/issues).

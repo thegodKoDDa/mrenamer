@@ -1,6 +1,6 @@
 # Manual do Renomeador de Mídia
 
-Abra `renamer final/MediaRenamer.exe` no Windows ou execute pelo código conforme o README.
+Para executar pelo código no Windows, siga a [instalação no README](../README.md#executar-no-windows). Se você já possui a distribuição local, abra `renamer final/MediaRenamer.exe`. O repositório não inclui o executável.
 
 1. Selecione uma pasta ou arraste uma pasta para a janela. Arquivos arrastados juntos precisam pertencer à mesma pasta.
 2. Escolha o filtro de categoria e a ordenação. A busca por nome (Ctrl+F) restringe a lista visível.

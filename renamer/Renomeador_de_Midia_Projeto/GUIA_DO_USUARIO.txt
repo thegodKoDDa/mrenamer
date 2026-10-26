@@ -1,18 +1,12 @@
-RENOMEADOR DE MÍDIA — GUIA DO USUÁRIO
+RENOMEADOR DE MÍDIA — GUIA RÁPIDO
 
-Abra MediaRenamer.exe no Windows.
+1. Selecione ou arraste uma pasta. Arquivos arrastados juntos devem estar na mesma pasta.
+2. Filtre, ordene e selecione os arquivos.
+3. Configure o modo Padrão para gerar uma sequência ou use Substituição para alterar trechos dos nomes.
+4. Confira Novo nome e confirme a operação. A extensão original é preservada.
+5. DESFAZER restaura os nomes do último lote durante a sessão.
 
-1. Escolha ou arraste uma pasta; arquivos arrastados juntos devem estar na mesma pasta.
-2. Filtre por categoria, busque por nome (Ctrl+F), ordene e selecione os itens.
-3. Para uma sequência: configure nome base, separador, número inicial, dígitos e data opcional. Confira a prévia Padrão e use RENOMEAR (PADRÃO).
-4. Para mudar texto dos nomes existentes: preencha Procurar/Substituir por, confira a prévia Substituição e use Aplicar substituição. Esse fluxo preserva a extensão e sempre pede confirmação. Não altera o padrão.
-5. DESFAZER restaura os nomes do último lote na sessão atual. LIMPAR encerra a pasta na tela, sem desfazer o que já foi aplicado.
+Em Configurações, ajuste o tema e o monitoramento. Recuperar lote interrompido permite selecionar um mapa versão 2, inspecionar a prévia e confirmar a restauração. Mapas antigos ou arquivos alterados podem exigir recuperação manual. Não apague mapas ou temporários antes de conferir os arquivos.
 
-Configurações: tema, confirmação antes do padrão, intervalo de atualização e subpastas. A lista é monitorada automaticamente; nenhuma renomeação acontece sozinha. Duplo clique abre o arquivo no programa padrão do Windows.
-
-Número inicial: 0 a 999999; dígitos: 1 a 8. Campos ou nomes inválidos impedem a operação. As duas ações preservam a última extensão original e não convertem o conteúdo.
-
-Em falha, o aplicativo tenta restaurar os nomes anteriores. Se a recuperação ficar incompleta, não repita o lote nem apague temporários: preserve o mapa JSON e os arquivos indicados na mensagem para recuperação manual. Desfazer não persiste ao fechar. Queda de energia ou bloqueios externos podem exigir recuperação manual.
-
-Teste primeiro em cópias quando os arquivos forem importantes.
-Manual completo: docs/user-guide.md na raiz do projeto.
+Manual completo: docs/user-guide.md
+Código-fonte e documentação: https://github.com/thegodKoDDa/mrenamer

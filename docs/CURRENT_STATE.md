@@ -1,5 +1,7 @@
 # Estado atual — 26/10/2026
 
+Apresentação pública reorganizada: README voltado ao produto e à instalação, navegação por uso/desenvolvimento/manutenção, changelog consolidado, guia de contribuição e modelos de issues/PR. Descrição e tópicos do GitHub atualizados. Esta revisão altera somente documentação e metadados; fontes e executáveis mantêm a build abaixo.
+
 Recuperação assistida implementada em **Configurações → Recuperar lote interrompido…**, com inspeção, prévia, confirmação e revalidação. Preservados produto, identidade visual, fontes originais, stack e históricos.
 
 Fontes ativas: `renamer/Renomeador_de_Midia_Projeto/media_renamer.py` (GUI) e `rename_engine.py` (motor). Mapas novos versão 2 registram identidade, tamanho e mtime_ns; ficam na pasta ancestral comum às origens. Recuperação recusa arquivos ausentes/alterados, conflitos, links e mapas inconsistentes. Mapas versão 1 continuam manuais. O fluxo não inicia recuperação sozinho, nem garante atomicidade contra queda de energia. Manual e limites em user-guide.md e KNOWN_ISSUES.md.
