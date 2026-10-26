@@ -41,7 +41,7 @@ No Linux, testes Windows são pulados; no Windows usar `python`. A suíte de GUI
 
 ### Integração contínua
 
-O workflow [Verificações](../.github/workflows/ci.yml) executa os testes em pushes para `main` e em pull requests. No Linux, usa o Python do sistema com Tkinter e pula os casos exclusivos de Windows. No Windows, prepara Python 3.13 com as dependências fixadas e executa também os testes Tk. Ambos executam os testes de continuidade.
+O workflow [Verificações](../.github/workflows/ci.yml) executa os testes em pushes para `main` e em pull requests. No Linux, usa o Python do sistema com Tkinter e pula os casos exclusivos de Windows. No Windows, prepara Python 3.13 com as dependências fixadas e executa também os testes Tk. Ambos executam os testes de continuidade. O job Windows usa o diretório temporário completo do runner para as fixtures, evitando o alias DOS 8.3 presente no TEMP padrão da imagem.
 
 O workflow verifica o código, sem gerar ou publicar executáveis. A entrega de uma alteração no aplicativo continua exigindo a rotina Windows abaixo.
 

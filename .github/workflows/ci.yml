@@ -30,6 +30,12 @@ jobs:
     name: Motor e interface · Windows
     runs-on: windows-latest
     timeout-minutes: 10
+    env:
+      # O TEMP padrão da imagem pode usar um alias DOS 8.3 (RUNNER~1).
+      # As fixtures de recuperação exigem caminhos completos, sem aliases.
+      TEMP: ${{ runner.temp }}
+      TMP: ${{ runner.temp }}
+      PYTHONUTF8: '1'
     steps:
       - uses: actions/checkout@v6
         with:

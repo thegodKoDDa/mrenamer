@@ -4,6 +4,7 @@
 
 - O lote não é uma transação atômica do sistema de arquivos. Queda de energia, remoção externa, disco indisponível ou bloqueios podem interromper a operação e a tentativa de restauração.
 - **Desfazer** existe apenas na sessão atual e restaura nomes, sem reverter alterações no conteúdo. Evite outros programas modificando os mesmos arquivos durante o lote.
+- Caminhos abreviados DOS 8.3 (como `RUNNER~1`) podem ser recusados pela verificação conservadora de caminhos dos mapas. Use caminhos completos, sem aliases, ao carregar a pasta e selecionar o mapa.
 - A recuperação assistida exige um mapa versão 2 e os arquivos nos caminhos registrados. Mapas versão 1, arquivos ausentes ou metadados alterados podem exigir recuperação manual. Não há retomada automática ao reiniciar.
 - Se a recuperação também for interrompida e gerar um novo mapa, resolva esse mapa antes de voltar ao inicial. Um mapa residual pode permanecer se sua remoção falhar; confira os nomes e as identidades antes de restaurar. Não execute mapas como código.
 - Os testes simulam encerramento abrupto de processo, incluindo ciclos de nomes. Não simulam corte de energia ou garantem persistência física do sistema de arquivos.
